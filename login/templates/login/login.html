@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | EventLive</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'login/css/styles.css' %}">
+</head>
+
+<body>
+
+    <!-- ===================================
+        BACKGROUND EFFECTS
+    ==================================== -->
+
+    <div class="background-glow">
+
+        <div class="glow glow-1"></div>
+
+        <div class="glow glow-2"></div>
+
+    </div>
+
+    <!-- ===================================
+        NAVBAR
+    ==================================== -->
+
+    <nav class="navbar">
+
+       <a href="/">
+            <div class="logo">
+                EVENT<span>LIVE</span>
+            </div>
+        </a>
+
+        <div class="nav-buttons">
+
+            <!-- LOGIN ACTIVO -->
+
+            <div class="nav-link nav-link-login">
+                Login
+            </div>
+
+            <a href="{% url 'register' %}" class="nav-link nav-link-register">
+                Registro
+            </a>
+
+        </div>
+
+    </nav>
+
+    <!-- ===================================
+        LOGIN
+    ==================================== -->
+
+    <section class="login-wrapper">
+
+        <div class="login-container">
+
+            <!-- LEFT -->
+
+            <div class="login-left">
+
+                <div class="login-left-content">
+
+                    <h1>
+                        Volvé a vivir la experiencia.
+                    </h1>
+
+                    <p>
+                        Accedé a tus entradas, descubrí nuevos eventos y seguí
+                        conectado con los mejores espectáculos, conciertos y festivales.
+                    </p>
+
+                    <div class="mini-card">
+
+                        <h3>
+                            ✨ Miles de eventos disponibles
+                        </h3>
+
+                        <p>
+                            Comprá entradas de forma rápida, segura y descubrí
+                            shows únicos cerca tuyo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="login-right">
+
+                <div class="form-container">
+
+                    <h2 class="form-title">
+                        Iniciar sesión
+                    </h2>
+
+                    <p class="form-subtitle">
+                        Ingresá tus datos para continuar.
+                    </p>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="input-group">
+
+                            <label>Email</label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="ejemplo@email.com"
+                            >
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label>Contraseña</label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="••••••••••"
+                            >
+
+                        </div>
+
+                        <div class="form-options">
+
+                            <label class="remember">
+
+                                <input type="checkbox">
+
+                                Recordarme
+
+                            </label>
+
+                            <a href="#" class="forgot-password">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+
+                        </div>
+
+                        <button type="submit" class="btn-login">
+                            Ingresar
+                        </button>
+
+                    </form>
+
+                    <p class="register-text">
+
+                        ¿Todavía no tenés cuenta?
+
+                        <a href="{% url 'register' %}">
+                            Crear cuenta
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</body>
+</html>

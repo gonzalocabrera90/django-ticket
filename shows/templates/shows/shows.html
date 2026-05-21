@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Detalle del Show | EventLive</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'shows/css/styles.css' %}">
+
+</head>
+
+<body>
+
+    <!-- =====================================
+        NAVBAR
+    ====================================== -->
+
+    <nav class="navbar" id="navbar">
+
+        <a href="/" class="logo">
+            EVENT<span>LIVE</span>
+        </a>
+
+        <div class="nav-buttons">
+
+            <a href="{% url 'login' %}" class="btn-nav btn-outline">
+                Login
+            </a>
+
+            <a href="{% url 'register' %}" class="btn-nav btn-primary">
+                Registro
+            </a>
+
+        </div>
+
+    </nav>
+
+    <!-- =====================================
+        HERO
+    ====================================== -->
+
+    <header class="hero">
+
+        <img
+            src="{% static 'img/show-detail.jpg' %}"
+            alt="Show"
+        >
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <h1>
+                Cosmic Lights Festival 2026
+            </h1>
+
+            <div class="hero-meta">
+
+                <div class="meta-item">
+                    📍 Buenos Aires
+                </div>
+
+                <div class="meta-item">
+                    📅 09 Septiembre 2026
+                </div>
+
+                <div class="meta-item">
+                    🎵 Música electrónica
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- =====================================
+        CONTENT
+    ====================================== -->
+
+    <main class="container">
+
+        <div class="content-grid">
+
+            <!-- DESCRIPTION -->
+
+            <div class="description-box">
+
+                <h2 class="section-title">
+                    Sobre el espectáculo
+                </h2>
+
+                <p class="description">
+
+                    Sumergite en una experiencia audiovisual única con luces,
+                    efectos visuales inmersivos y artistas internacionales que
+                    transformarán la noche en un espectáculo inolvidable.
+
+                    <br><br>
+
+                    Cosmic Lights Festival reúne a miles de personas en una
+                    atmósfera llena de energía, emoción y música en vivo.
+                    Disfrutá de escenarios impactantes, sonido de última
+                    generación y una producción visual impresionante.
+
+                    <br><br>
+
+                    Viví una noche cargada de emociones, colores vibrantes y
+                    momentos inolvidables junto a tus artistas favoritos.
+
+                </p>
+
+            </div>
+
+            <!-- SIDEBAR -->
+
+            <aside class="ticket-card">
+
+                <div class="price">
+                    $9.000
+                </div>
+
+                <p>
+                    Entrada general por persona.
+                    Seleccioná la cantidad de entradas y continuá con tu compra.
+                </p>
+
+                <button class="buy-button" id="openModal">
+                    Comprar entradas
+                </button>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- =====================================
+        MODAL
+    ====================================== -->
+
+    <div class="modal" id="ticketModal">
+
+        <div class="modal-content">
+
+            <div class="close-modal" id="closeModal">
+                ×
+            </div>
+
+            <h2>
+                Seleccionar entradas
+            </h2>
+
+            <div class="quantity-box">
+
+                <label>
+                    Cantidad de entradas
+                </label>
+
+                <select id="ticketQuantity">
+
+                    <option value="1">1 entrada</option>
+                    <option value="2">2 entradas</option>
+                    <option value="3">3 entradas</option>
+                    <option value="4">4 entradas</option>
+                    <option value="5">5 entradas</option>
+
+                </select>
+
+            </div>
+
+            <div class="total-price">
+
+                <span>
+                    Precio total
+                </span>
+
+                <h3 id="totalPrice">
+                    $9000
+                </h3>
+
+            </div>
+
+            <button class="next-button">
+                Siguiente
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+        SCRIPTS
+    ====================================== -->
+
+    <script>
+
+        /* =========================
+            NAVBAR SCROLL
+        ========================== */
+
+        const navbar = document.getElementById("navbar");
+
+        window.addEventListener("scroll", () => {
+
+            if(window.scrollY > 40){
+                navbar.classList.add("scrolled");
+            }else{
+                navbar.classList.remove("scrolled");
+            }
+
+        });
+
+        /* =========================
+            MODAL
+        ========================== */
+
+        const modal = document.getElementById("ticketModal");
+
+        const openModal = document.getElementById("openModal");
+
+        const closeModal = document.getElementById("closeModal");
+
+        openModal.addEventListener("click", () => {
+            modal.classList.add("active");
+        });
+
+        closeModal.addEventListener("click", () => {
+            modal.classList.remove("active");
+        });
+
+        modal.addEventListener("click", (e) => {
+
+            if(e.target === modal){
+                modal.classList.remove("active");
+            }
+
+        });
+
+        /* =========================
+            PRICE CALCULATION
+        ========================== */
+
+        const quantitySelect =
+            document.getElementById("ticketQuantity");
+
+        const totalPrice =
+            document.getElementById("totalPrice");
+
+        const basePrice = 9000;
+
+        quantitySelect.addEventListener("change", () => {
+
+            const quantity =
+                parseInt(quantitySelect.value);
+
+            const total =
+                basePrice * quantity;
+
+            totalPrice.textContent =
+                `$${total.toLocaleString("es-AR")}`;
+
+        });
+
+    </script>
+
+</body>
+</html>

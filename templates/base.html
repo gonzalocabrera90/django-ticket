@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django URL Viewer</title>
+    <!-- Google Font: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at 50% 50%, #151124 0%, #0b0914 100%);
+            --accent-primary: #8a2be2;
+            --accent-secondary: #ff007f;
+            --accent-glow: rgba(138, 43, 226, 0.4);
+            --text-main: #f3f1f8;
+            --text-muted: #9f9baa;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(255, 255, 255, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Abstract glowing blobs for premium feel */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        body::before {
+            background: var(--accent-primary);
+            top: 15%;
+            left: 20%;
+            animation: float-blob-1 25s infinite alternate ease-in-out;
+        }
+
+        body::after {
+            background: var(--accent-secondary);
+            bottom: 15%;
+            right: 20%;
+            animation: float-blob-2 25s infinite alternate ease-in-out;
+        }
+
+        @keyframes float-blob-1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 80px) scale(1.2); }
+        }
+
+        @keyframes float-blob-2 {
+            0% { transform: translate(0, 0) scale(1.1); }
+            100% { transform: translate(-80px, -50px) scale(0.9); }
+        }
+
+        /* Header Navigation */
+        header {
+            width: 100%;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 30%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: var(--accent-secondary);
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(138, 43, 226, 0.2);
+            border: 1px solid rgba(138, 43, 226, 0.4);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
+        }
+
+        /* Main Area */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            perspective: 1000px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 30px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+            background: rgba(7, 5, 13, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        footer a {
+            color: var(--accent-secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 15px;
+            }
+            nav {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+            }
+            .nav-links a {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                🎫 Django<span>Ticket</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="{% if current_url == '/' %}active{% endif %}">Root (/)</a></li>
+                <li><a href="/home/" class="{% if current_url == '/home' %}active{% endif %}">Home</a></li>
+                <li><a href="/login/" class="{% if current_url == '/login' %}active{% endif %}">Login</a></li>
+                <li><a href="/register/" class="{% if current_url == '/register' %}active{% endif %}">Register</a></li>
+                <li><a href="/shows/" class="{% if current_url == '/shows' %}active{% endif %}">Shows</a></li>
+                <li><a href="/ticket/" class="{% if current_url == '/ticket' %}active{% endif %}">Ticket</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <p>Desarrollado con Django & PostgreSQL por <a href="#">Antigravity</a> &copy; 2026</p>
+    </footer>
+
+</body>
+</html>

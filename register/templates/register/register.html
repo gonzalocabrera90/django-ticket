@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registro | EventLive</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'register/css/styles.css' %}">
+
+</head>
+
+<body>
+
+    <!-- ===================================
+        BACKGROUND EFFECTS
+    ==================================== -->
+
+    <div class="background-glow">
+
+        <div class="glow glow-1"></div>
+
+        <div class="glow glow-2"></div>
+
+    </div>
+
+    <!-- ===================================
+        NAVBAR
+    ==================================== -->
+
+    <nav class="navbar">
+       <a href="/">
+            <div class="logo">
+                EVENT<span>LIVE</span>
+            </div>
+        </a>
+        <div class="nav-buttons">
+
+            <a href="{% url 'login' %}" class="nav-link nav-link-login">
+                Login
+            </a>
+
+            <!-- REGISTER ACTIVO -->
+
+            <div class="nav-link nav-link-register">
+                Registro
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- ===================================
+        REGISTER
+    ==================================== -->
+
+    <section class="register-wrapper">
+
+        <div class="register-container">
+
+            <!-- LEFT -->
+
+            <div class="register-left">
+
+                <div class="register-left-content">
+
+                    <h1>
+                        Creá tu cuenta y empezá la experiencia.
+                    </h1>
+
+                    <p>
+                        Accedé a conciertos, festivales y espectáculos únicos.
+                        Guardá tus eventos favoritos y conseguí entradas en segundos.
+                    </p>
+
+                    <div class="mini-card">
+
+                        <h3>
+                            🎟️ Acceso rápido y seguro
+                        </h3>
+
+                        <p>
+                            Registrate gratis y descubrí miles de eventos,
+                            promociones y experiencias inolvidables.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="register-right">
+
+                <div class="form-container">
+
+                    <h2 class="form-title">
+                        Crear cuenta
+                    </h2>
+
+                    <p class="form-subtitle">
+                        Completá tus datos para registrarte.
+                    </p>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="input-group">
+
+                            <label>Nombre completo</label>
+
+                            <input
+                                type="text"
+                                name="full_name"
+                                placeholder="Tu nombre"
+                            >
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label>Email</label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="ejemplo@email.com"
+                            >
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label>Contraseña</label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="••••••••••"
+                            >
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label>Confirmar contraseña</label>
+
+                            <input
+                                type="password"
+                                name="confirm_password"
+                                placeholder="••••••••••"
+                            >
+
+                        </div>
+
+                        <button type="submit" class="btn-register">
+                            Crear cuenta
+                        </button>
+
+                        <p class="terms">
+
+                            Al registrarte aceptás nuestros
+                            <a href="#">Términos y Condiciones</a>
+                            y
+                            <a href="#">Políticas de privacidad</a>.
+
+                        </p>
+
+                    </form>
+
+                    <p class="login-text">
+
+                        ¿Ya tenés una cuenta?
+
+                        <a href="{% url 'login' %}">
+                            Iniciar sesión
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</body>
+</html>
