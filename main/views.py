@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db import connection
 from .models import MainDashboard
 from shows.models import Show
-from register.models import RegistrationProfile
+from register.models import User
 from ticket.models import Ticket
 
 def index_view(request):
@@ -16,7 +16,7 @@ def index_view(request):
     # Query database stats to show DB connectivity
     stats = {
         'total_shows': Show.objects.count(),
-        'total_users': RegistrationProfile.objects.count(),
+        'total_users': User.objects.count(),
         'total_tickets': Ticket.objects.count(),
     }
     

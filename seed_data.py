@@ -9,7 +9,7 @@ django.setup()
 from main.models import MainDashboard
 from home.models import HomeBanner
 from login.models import LoginLog
-from register.models import RegistrationProfile
+from register.models import User
 from shows.models import Show
 from ticket.models import Ticket
 
@@ -40,11 +40,11 @@ def seed():
     print("Created LoginLogs")
 
     # 4. Registration Profiles
-    RegistrationProfile.objects.all().delete()
-    RegistrationProfile.objects.create(username="juan_perez", email="juan@example.com", newsletter_opt_in=True)
-    RegistrationProfile.objects.create(username="maria_gomez", email="maria@example.com", newsletter_opt_in=False)
-    RegistrationProfile.objects.create(username="carlos_ruiz", email="carlos@example.com", newsletter_opt_in=True)
-    print("Created RegistrationProfiles")
+    User.objects.all().delete()
+    User.objects.create(username="juan_perez", email="juan@example.com", newsletter_opt_in=True)
+    User.objects.create(username="maria_gomez", email="maria@example.com", newsletter_opt_in=False)
+    User.objects.create(username="carlos_ruiz", email="carlos@example.com", newsletter_opt_in=True)
+    print("Created Users")
 
     # 5. Shows
     Show.objects.all().delete()

@@ -1,23 +1,33 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Registro | EventLive</title>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'register/css/styles.css' %}">
+    <!-- GOOGLE FONTS -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+    <link rel="stylesheet" href="{% static 'register/css/register.css' %}">
 
 </head>
 
 <body>
 
-    <!-- ===================================
-        BACKGROUND EFFECTS
-    ==================================== -->
+    <!-- =====================================
+        BACKGROUND
+    ====================================== -->
 
     <div class="background-glow">
 
@@ -27,35 +37,41 @@
 
     </div>
 
-    <!-- ===================================
+    <!-- =====================================
         NAVBAR
-    ==================================== -->
+    ====================================== -->
 
     <nav class="navbar">
-       <a href="/">
-            <div class="logo">
-                EVENT<span>LIVE</span>
-            </div>
+
+        <a href="/" class="logo">
+
+            EVENT<span>LIVE</span>
+
         </a>
+
         <div class="nav-buttons">
 
-            <a href="{% url 'login' %}" class="nav-link nav-link-login">
+            <a
+                href="{% url 'login' %}"
+                class="btn-nav btn-outline"
+            >
                 Login
             </a>
 
-            <!-- REGISTER ACTIVO -->
-
-            <div class="nav-link nav-link-register">
+            <a
+                href="#"
+                class="btn-nav btn-active"
+            >
                 Registro
-            </div>
+            </a>
 
         </div>
 
     </nav>
 
-    <!-- ===================================
-        REGISTER
-    ==================================== -->
+    <!-- =====================================
+        REGISTER SECTION
+    ====================================== -->
 
     <section class="register-wrapper">
 
@@ -65,26 +81,33 @@
 
             <div class="register-left">
 
-                <div class="register-left-content">
+                <div class="left-content">
 
                     <h1>
-                        Creá tu cuenta y empezá la experiencia.
+                        Viví los mejores shows.
                     </h1>
 
                     <p>
-                        Accedé a conciertos, festivales y espectáculos únicos.
-                        Guardá tus eventos favoritos y conseguí entradas en segundos.
+
+                        Creá tu cuenta para acceder
+                        a eventos, entradas exclusivas,
+                        historial de compras y mucho más.
+
                     </p>
 
-                    <div class="mini-card">
+                    <div class="feature-box">
 
                         <h3>
-                            🎟️ Acceso rápido y seguro
+                            🎟️ Acceso rápido
                         </h3>
 
                         <p>
-                            Registrate gratis y descubrí miles de eventos,
-                            promociones y experiencias inolvidables.
+
+                            Comprá entradas,
+                            seguí tus eventos favoritos
+                            y recibí novedades
+                            personalizadas.
+
                         </p>
 
                     </div>
@@ -104,85 +127,139 @@
                     </h2>
 
                     <p class="form-subtitle">
-                        Completá tus datos para registrarte.
+
+                        Completá tus datos para comenzar.
+
                     </p>
 
-                    <form method="POST">
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
 
                         {% csrf_token %}
 
-                        <div class="input-group">
+                        {% if form.errors %}
+                            <div>{{form.errors}}</div>
+                        {% endif %}
+                        <div class="form-grid">
 
-                            <label>Nombre completo</label>
+                            <!-- NOMBRE -->
 
-                            <input
-                                type="text"
-                                name="full_name"
-                                placeholder="Tu nombre"
-                            >
+                            <div class="input-group">
+
+                                <label>
+                                    Nombre
+                                </label>
+
+                                {{ form.first_name }}
+
+                            </div>
+
+                            <!-- APELLIDO -->
+
+                            <div class="input-group">
+
+                                <label>
+                                    Apellido
+                                </label>
+
+                                {{ form.last_name }}
+
+                            </div>
+
+                            <!-- FECHA -->
+
+                            <div class="input-group">
+
+                                <label>
+                                    Fecha nacimiento
+                                </label>
+
+                                {{ form.birth }}
+
+                            </div>
+
+                            <!-- DNI -->
+
+                            <div class="input-group">
+
+                                <label>
+                                    DNI
+                                </label>
+
+                                {{ form.dni }}
+
+                            </div>
+
+                            <!-- EMAIL -->
+
+                            <div class="input-group full">
+
+                                <label>
+                                    Email
+                                </label>
+
+                                {{ form.email }}
+
+                            </div>
+
+                            <!-- IMG -->
+
+                            <div class="input-group full">
+
+                                <label>
+                                    Imagen perfil
+                                </label>
+
+                                {{ form.img }}
+
+                            </div>
+
+                            <!-- PASSWORD -->
+
+                            <div class="input-group">
+
+                                <label>
+                                    Contraseña
+                                </label>
+
+                                {{ form.password1 }}
+
+                            </div>
+
+                            <!-- PASSWORD 2 -->
+
+                            <div class="input-group">
+
+                                <label>
+                                    Repetir contraseña
+                                </label>
+
+                                {{ form.password2 }}
+
+                            </div>
 
                         </div>
 
-                        <div class="input-group">
-
-                            <label>Email</label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="ejemplo@email.com"
-                            >
-
-                        </div>
-
-                        <div class="input-group">
-
-                            <label>Contraseña</label>
-
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="••••••••••"
-                            >
-
-                        </div>
-
-                        <div class="input-group">
-
-                            <label>Confirmar contraseña</label>
-
-                            <input
-                                type="password"
-                                name="confirm_password"
-                                placeholder="••••••••••"
-                            >
-
-                        </div>
-
-                        <button type="submit" class="btn-register">
-                            Crear cuenta
+                        <button
+                            type="submit"
+                            class="btn-submit"
+                        >
+                            Continuar
                         </button>
-
-                        <p class="terms">
-
-                            Al registrarte aceptás nuestros
-                            <a href="#">Términos y Condiciones</a>
-                            y
-                            <a href="#">Políticas de privacidad</a>.
-
-                        </p>
 
                     </form>
 
-                    <p class="login-text">
+                    <div class="bottom-link">
 
-                        ¿Ya tenés una cuenta?
+                        ¿Ya tenés cuenta?
 
                         <a href="{% url 'login' %}">
                             Iniciar sesión
                         </a>
 
-                    </p>
+                    </div>
 
                 </div>
 
