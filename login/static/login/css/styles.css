@@ -383,7 +383,9 @@ a{
 
     transition:0.3s;
 }
-
+.btn-outline{
+    color:rgb(0, 0, 0);
+}
 .btn-login:hover{
     transform:translateY(-3px);
 

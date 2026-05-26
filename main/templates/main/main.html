@@ -1,40 +1,21 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos | Inicio</title>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
+{% block title %}
+    Eventos | Inicio
+{% endblock %}
 
-</head>
-<body>
+{% block extra_css %}
 
-    <!-- =========================
-        NAVBAR
-    ========================== -->
+<link
+    rel="stylesheet"
+    href="{% static 'main/css/styles.css' %}"
+>
 
-    <nav class="navbar" id="navbar">
-        <div class="logo">
-                EVENT<span>LIVE</span>
-        </div>
-        <div class="nav-buttons">
-            <a href="{% url 'login' %}">
-                <button class="btn btn-outline">
-                    Login
-                </button>
-            </a>
-            <a href="{% url 'register' %}">
-                <button class="btn btn-primary">
-                    Registro
-                </button>
-            </a>
-        </div>
+{% endblock %}
 
-    </nav>
+{% block content %}
 
     <!-- =========================
         HERO
@@ -197,35 +178,4 @@
 
     </section>
 
-    <!-- =========================
-        FOOTER
-    ========================== -->
-
-    <footer>
-        <p>
-            © 2026 EventLive — Plataforma de venta de entradas.
-        </p>
-    </footer>
-
-    <!-- =========================
-        SCRIPT NAVBAR
-    ========================== -->
-
-    <script>
-
-        const navbar = document.getElementById("navbar");
-
-        window.addEventListener("scroll", () => {
-
-            if(window.scrollY > 40){
-                navbar.classList.add("scrolled");
-            }else{
-                navbar.classList.remove("scrolled");
-            }
-
-        });
-
-    </script>
-
-</body>
-</html>
+{% endblock %}

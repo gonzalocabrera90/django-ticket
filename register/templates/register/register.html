@@ -1,29 +1,16 @@
+{% extends 'base.html' %}
+
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
+{% block title %}
+   Registro | EventLive
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'register/css/register.css' %}">
+{% endblock %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Registro | EventLive</title>
-
-    <!-- GOOGLE FONTS -->
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-    <link rel="stylesheet" href="{% static 'register/css/register.css' %}">
-
-</head>
-
-<body>
+{% block content %}
 
     <!-- =====================================
         BACKGROUND
@@ -41,7 +28,7 @@
         NAVBAR
     ====================================== -->
 
-    <nav class="navbar">
+    <!-- <nav class="navbar">
 
         <a href="/" class="logo">
 
@@ -67,7 +54,7 @@
 
         </div>
 
-    </nav>
+    </nav> -->
 
     <!-- =====================================
         REGISTER SECTION
@@ -268,6 +255,4 @@
         </div>
 
     </section>
-
-</body>
-</html>
+{% endblock %}

@@ -1,19 +1,19 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login | EventLive</title>
+{% block title %}
+   Login | EventLive
+{% endblock %}
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'login/css/styles.css' %}">
-</head>
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'login/css/styles.css' %}"
+>
+{% endblock %}
 
-<body>
-
+{% block content %}
     <!-- ===================================
         BACKGROUND EFFECTS
     ==================================== -->
@@ -25,34 +25,6 @@
         <div class="glow glow-2"></div>
 
     </div>
-
-    <!-- ===================================
-        NAVBAR
-    ==================================== -->
-
-    <nav class="navbar">
-
-       <a href="/">
-            <div class="logo">
-                EVENT<span>LIVE</span>
-            </div>
-        </a>
-
-        <div class="nav-buttons">
-
-            <!-- LOGIN ACTIVO -->
-
-            <div class="nav-link nav-link-login">
-                Login
-            </div>
-
-            <a href="{% url 'register' %}" class="nav-link nav-link-register">
-                Registro
-            </a>
-
-        </div>
-
-    </nav>
 
     <!-- ===================================
         LOGIN
@@ -175,6 +147,4 @@
         </div>
 
     </section>
-
-</body>
-</html>
+{% endblock %}

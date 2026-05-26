@@ -1,0 +1,7 @@
+Hola {{ user.first_name }},
+
+Por favor confirmá tu cuenta haciendo click:
+
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Si no creaste esta cuenta, ignorá este email.

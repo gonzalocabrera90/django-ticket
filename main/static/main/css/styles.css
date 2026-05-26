@@ -21,75 +21,6 @@ a{
 }
 
 /* =========================
-    NAVBAR
-========================== */
-
-.navbar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    z-index:1000;
-    padding:22px 7%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    transition:0.35s ease;
-    background:transparent;
-}
-
-.navbar.scrolled{
-    background:rgba(14, 30, 75, 0.92);
-    backdrop-filter:blur(12px);
-    box-shadow:0 4px 20px rgba(0,0,0,0.35);
-}
-
-.logo{
-    font-size:1.7rem;
-    font-weight:700;
-    letter-spacing:1px;
-}
-
-.logo span{
-    color:#8e6bff;
-}
-
-.nav-buttons{
-    display:flex;
-    gap:14px;
-}
-
-.btn{
-    padding:11px 22px;
-    border-radius:999px;
-    border:none;
-    cursor:pointer;
-    font-weight:600;
-    transition:0.3s;
-}
-
-.btn-outline{
-    background:transparent;
-    border:1px solid rgba(255,255,255,0.6);
-    color:white;
-}
-
-.btn-outline:hover{
-    background:white;
-    color:#111;
-}
-
-.btn-primary{
-    background:linear-gradient(135deg,#5e7bff,#9b4dff);
-    color:white;
-}
-
-.btn-primary:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(123, 97, 255, 0.45);
-}
-
-/* =========================
     HERO
 ========================== */
 
@@ -297,19 +228,6 @@ section{
 
 .search-container select option{
     color:black;
-}
-
-/* =========================
-    FOOTER
-========================== */
-
-footer{
-    margin-top:90px;
-    background:#050814;
-    padding:45px 7%;
-    text-align:center;
-    color:#bcbcbc;
-    border-top:1px solid rgba(255,255,255,0.08);
 }
 
 /* =========================

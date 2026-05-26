@@ -128,13 +128,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static',]
 AUTH_USER_MODEL = 'register.User'
-CITIES_LIGHT_INCLUDE_COUNTRIES = [
-
-    'AR',
-    'UY',
-    'CL',
-    'BR'
-
-]
+CITIES_LIGHT_INCLUDE_COUNTRIES = ['AR']
+# agregar mas paises y ciudades a la base de datos en la migracion
+# CITIES_LIGHT_INCLUDE_COUNTRIES = ['AR','UY','CL','BR']
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
