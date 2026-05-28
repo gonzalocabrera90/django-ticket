@@ -127,8 +127,8 @@ a{
     border:1px solid rgba(255,126,212,0.22);
 
     color:#d6339c;
-
-    pointer-events:none;
+    pointer-events: auto; 
+    cursor: pointer;
 }
 
 /* ===================================

@@ -64,16 +64,16 @@
 
         <div class="cards-grid">
 
-            {% for i in "1234" %}
-            <a href="{% url 'shows' %}">
+            {% for i in dashboard %}
+            <a href="{% url 'espectaculo' i.id %}">
                 <div class="card">
                     <img src="{% static 'img/portada.jpg' %}" alt="Show">
 
                     <div class="card-overlay"></div>
 
                     <div class="card-info">
-                        <h3>Nombre del espectáculo</h3>
-                        <p>Buenos Aires • 20 Nov</p>
+                        <h3>{{i.title}}</h3>
+                        <p>{{i.date}}</p>
                     </div>
                 </div>
             </a>

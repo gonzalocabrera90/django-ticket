@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+   Mapa | EventLive
+{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'shows/css/styles.css' %}"
+>
+{% endblock %}
+
+{% block content %}
+<svg viewBox="{{ place.viewbox }}" width="100%" height="auto">
+    
+    {% for sector in place.sectors.all %}
+        
+        {% if sector.polygon_geometry.type == "polygon" %}
+            <polygon 
+                id="{{ sector.slug }}"
+                points="{{ sector.polygon_geometry.points }}" 
+                class="sector-interactivo"
+                data-name="{{ sector.name }}"
+                data-disponibles="{{ sector.available }}"
+            />
+        {% elif sector.polygon_geometry.type == "path" %}
+            <path 
+                id="{{ sector.slug }}"
+                d="{{ sector.polygon_geometry.d }}" 
+                class="sector-interactivo"
+                data-name="{{ sector.name }}"
+                data-disponibles="{{ sector.available }}"
+            />
+        {% endif %}
+
+    {% endfor %}
+    
+</svg>
+<div class="mapa-espectaculo">
+    <svg viewBox="{{ place.viewbox }}" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1000" height="1000" fill="white"/>
+        
+        <rect x="422" y="635" width="174" height="59" fill="#333333"/>
+        <text x="509" y="670" fill="white" font-family="Arial" font-size="14" text-anchor="middle">ESCENARIO</text>
+
+        {% for sector in place.sectors.all %}
+            {% if sector.polygon_geometry.type == "path" %}
+                <path 
+                    id="{{ sector.slug }}"
+                    d="{{ sector.polygon_geometry.d }}" 
+                    class="sector-interactivo"
+                    data-id="{{ sector.id }}"
+                    data-name="{{ sector.name }}"
+                    data-disponibles="{{ sector.available }}"
+                    data-precio="{{ sector.price }}"
+                />
+            {% endif %}
+        {% endfor %}
+    </svg>
+</div>
+{% endblock %}

@@ -5,10 +5,10 @@
     </div>
     <div class="nav-buttons">
         {% if request.user.is_authenticated %}
-            <a  class="nav-link nav-link-register">
+            <a href="{% url 'index' %}" class="nav-link nav-link-register">
                 Perfil
             </a>
-            <a  class="nav-link nav-link-register">
+            <a href="{% url 'index' %}"  class="nav-link nav-link-register">
                 Mis entradas
             </a>
             <form method="POST" action="{% url 'logout' %}" >

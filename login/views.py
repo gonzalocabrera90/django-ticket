@@ -7,6 +7,10 @@ from .models import LoginLog
 
 import random
 
+from register.utils import (
+    send_activation_email
+)
+
 from django.contrib.auth import (
     authenticate,
     login,
@@ -59,15 +63,21 @@ def login_view(request):
 
         if user is not None:
             if not user.is_active:
-                return render(
-                    request,
-                    'register/login.html',
-                    {
-                        'error':
-                        'Cuenta no activada'
-                    }
-                )
+                # return render(
+                #     request,
+                #     'register/login.html',
+                #     {
+                #         'error':
+                #         'Cuenta no activada'
+                #     }
+                # )
+                request.session[
+                    'inactive_user_id'
+                ] = user.id
 
+                return redirect(
+                    'account-not-verified'
+                )
             # GENERAR CODIGO
 
             code = str(
@@ -108,7 +118,7 @@ def login_view(request):
         else:
             return render(
                 request,
-                'register/login.html',
+                'login/login.html',
                 {
                     'error':
                     'Credenciales inválidas'
@@ -118,6 +128,51 @@ def login_view(request):
     return render(
         request,
         'login/login.html'
+    )
+
+def account_not_verified_view(request):
+    user_id = request.session.get(
+        'inactive_user_id'
+    )
+
+    if not user_id:
+        return redirect('login')
+
+    user = User.objects.get(
+        id=user_id
+    )
+    return render(
+        request,
+        'login/account_not_verified.html',
+        {
+            'user': user
+        }
+    )
+
+
+def resend_activation_email_view(request):
+    user_id = request.session.get(
+        'inactive_user_id'
+    )
+
+    if not user_id:
+        return redirect('login')
+
+    user = User.objects.get(
+        id=user_id
+    )
+
+    send_activation_email(
+        request,
+        user
+    )
+
+    messages.success(
+        request,
+        'Te reenviamos el email de activación.'
+    )
+    return redirect(
+        'account-not-verified'
     )
 
 @unauthenticated_user

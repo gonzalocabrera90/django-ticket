@@ -1,0 +1,17 @@
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1000" height="1000" fill="white"/>
+<rect x="384" y="662" width="231" height="76" fill="#2056A7"/>
+<rect x="384" y="491" width="231" height="165" fill="#2056A7"/>
+<rect x="384" y="391" width="231" height="92" fill="#2056A7"/>
+<path d="M629.5 263.5L596 358.25H397.5L357 263.5H629.5Z" fill="#29B92E"/>
+<path d="M666.5 195L643.5 259H351.5L325 195H666.5Z" fill="#B331C7"/>
+<path d="M714 347.5L624 387.5L601 369L643.5 270L714 347.5Z" fill="#29B92E"/>
+<path d="M677.5 202.5L790 316L737.5 347L646.5 263.5L677.5 202.5Z" fill="#B331C7"/>
+<path d="M345.5 268.5L394 365.5L370 393L269 345.5L345.5 268.5Z" fill="#29B92E"/>
+<path d="M312.5 202.5L345.5 263.5L263.5 344.5L202.5 315L312.5 202.5Z" fill="#B331C7"/>
+<path d="M630.95 398.5L723.5 357V715L630.95 750.5V398.5Z" fill="#29B92E"/>
+<path d="M735 355.5L795.5 322.5V701L735 728.5V355.5Z" fill="#B331C7"/>
+<path d="M270.5 355.5L366.5 401V747.5L270.5 718.5V355.5Z" fill="#29B92E"/>
+<path d="M197.5 323L257 350V729.5L197.5 699.5V323Z" fill="#B331C7"/>
+<rect x="439" y="744" width="123" height="55" fill="black"/>
+</svg>

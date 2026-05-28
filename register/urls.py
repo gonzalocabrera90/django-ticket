@@ -6,6 +6,7 @@ from .views import (
     activate,
     load_regions,
     load_cities,
+    activate_account_view,
 )
 
 urlpatterns = [
@@ -18,6 +19,11 @@ urlpatterns = [
         'register/address/',
         address_register_view,
         name='address-register'
+    ),
+    path(
+        'activate/<uidb64>/<token>/',
+        activate_account_view,
+        name='activate-account'
     ),
     path(
         'email-sent/',

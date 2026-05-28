@@ -6,7 +6,8 @@ from register.models import User
 from ticket.models import Ticket
 
 def index_view(request):
-    dashboard = MainDashboard.objects.first()
+    dashboard = Show.objects.all()
+    print(dashboard)
     if not dashboard:
         dashboard = MainDashboard(
             title="DjangoTicket Portal",

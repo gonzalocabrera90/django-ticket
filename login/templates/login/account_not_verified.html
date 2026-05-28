@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+Cuenta no activada
+{% endblock %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'login/css/styles.css' %}"
+>
+
+{% endblock %}
+
+{% block content %}
+
+<section class="verify-section">
+
+    <div class="verify-card">
+
+        <div class="verify-icon">
+
+            ✉️
+
+        </div>
+
+        <h1>
+
+            Cuenta no activada
+
+        </h1>
+
+        <p>
+
+            Tu cuenta todavía no fue activada.
+
+        </p>
+
+        <p>
+
+            Revisá el correo enviado a:
+
+        </p>
+
+        <div class="email-box">
+
+            {{ user.email }}
+
+        </div>
+
+        <p class="secondary-text">
+
+            Necesitás confirmar tu email para poder iniciar sesión.
+
+        </p>
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="success-message">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+        <form
+            method="POST"
+            action="{% url 'resend-activation-email' %}"
+        >
+
+            {% csrf_token %}
+
+            <button type="submit">
+
+                Reenviar email
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

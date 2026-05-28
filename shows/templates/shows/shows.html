@@ -10,7 +10,45 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'shows/css/styles.css' %}">
-
+   <style>
+        .teatro-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .map-wrapper {
+            width: 100%;
+            background: #fdfdfd;
+            border: 2px solid #eaeaea;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        /* Estilos vectoriales para los paths interactivos */
+        .sector-cliqueable {
+            cursor: pointer;
+            transition: transform 0.2s ease, fill 0.2s ease, filter 0.2s ease;
+            opacity: 0.8;
+        }
+        .sector-cliqueable:hover {
+            opacity: 1;
+            filter: brightness(1.1) drop-shadow(0px 5px 5px rgba(0,0,0,0.3));
+            stroke: #333;
+            stroke-width: 2px;
+        }
+        /* Alertas */
+        .error-box {
+            padding: 20px;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>

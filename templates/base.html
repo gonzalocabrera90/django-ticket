@@ -14,9 +14,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link
-    rel="stylesheet"
-    href="{% static 'css/globals.css' %}">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
 
     {% block extra_css %}
     {% endblock %}
@@ -30,6 +28,9 @@
     {% endblock %}
 
     {% include 'partials/footer.html' %}
+
+    {% block javascript %}
+    {% endblock %}
 </body>
 
 </html>

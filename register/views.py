@@ -10,6 +10,9 @@ from django.shortcuts import (
     render,
     redirect
 )
+from .utils import (
+    send_activation_email
+)
 
 from django.contrib.auth import login
 
@@ -43,7 +46,9 @@ from django.utils.http import (
 from django.utils.encoding import (
     force_str
 )
-
+from django.contrib.auth.tokens import (
+    default_token_generator
+)
 from .decorators import (
     unauthenticated_user
 )
@@ -94,110 +99,66 @@ def address_register_view(request):
     )
 
     if not user_id:
+
         return redirect('register')
 
     user = User.objects.get(
         id=user_id
     )
+
     countries = Country.objects.all()
 
     if request.method == 'POST':
-        form = AddressForm(request.POST)
+
+        form = AddressForm(
+            request.POST
+        )
 
         if form.is_valid():
+
             address = form.save(
                 commit=False
             )
+
             address.user = user
 
             if not user.addresses.exists():
+
                 address.is_default = True
 
             address.save()
 
-            # se envia email de confirmacion
-            current_site = get_current_site(request)
-            mail_subject = 'Activá tu cuenta'
-            message = render_to_string('register/activation_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(
-                    force_bytes(user.pk)
-                ),
-                'token': account_activation_token.make_token(user),
-            })
-            email = EmailMessage(
-                mail_subject,
-                message,
-                to=[user.email]
-                )
-            email.send()
+            send_activation_email(
+
+                request,
+
+                user
+
+            )
 
             return redirect(
                 'email-verification-sent'
             )
 
     else:
+
         form = AddressForm()
 
     return render(
+
         request,
+
         'register/address.html',
+
         {
+
             'form': form,
+
             'countries': countries,
+
         }
 
     )
-# def address_register_view(request):
-
-#     # if not request.user.is_authenticated:
-#     #     return redirect('register')
-
-#     if request.method == 'POST':
-#         form = AddressForm(request.POST)
-
-#         if form.is_valid():
-#             address = form.save()
-#             user = request.user
-#             user.address = address
-#             user.save()
-
-#             # se envia email de confirmacion
-#             current_site = get_current_site(request)
-#             mail_subject = 'Activá tu cuenta'
-#             message = render_to_string('register/activation_email.html', {
-#                 'user': user,
-#                 'domain': current_site.domain,
-#                 'uid': urlsafe_base64_encode(
-#                     force_bytes(user.pk)
-#                 ),
-#                 'token': account_activation_token.make_token(user),
-#             })
-#             email = EmailMessage(
-#                 mail_subject,
-#                 message,
-#                 to=[user.email]
-#                 )
-#             email.send()
-
-#             return redirect('email-verification-sent')
-
-#     else:
-
-#         form = AddressForm()
-
-#     countries = Country.objects.all()
-
-#     return render(
-#         request,
-#         'register/address.html',
-#         {
-#             'form': form,
-#             'countries': countries
-#         }
-#     )
-
 @unauthenticated_user
 def email_verification_sent(request):
     return render(
@@ -231,6 +192,43 @@ def activate(request, uidb64, token):
             request,
             'register/activation_invalid.html'
         )
+
+def activate_account_view(request, uidb64, token):
+
+    try:
+        uid = force_str(
+            urlsafe_base64_decode(
+                uidb64
+            )
+        )
+        user = User.objects.get(
+            pk=uid
+        )
+
+    except (
+        TypeError,
+        ValueError,
+        OverflowError,
+        User.DoesNotExist
+    ):
+        user = None
+
+    if (user is not None and default_token_generator.check_token(user,token)):
+        user.is_active = True
+        user.save()
+        return redirect(
+            'login'
+        )
+
+    else:
+
+        return render(
+            request,
+
+            'register/activation_invalid.html'
+
+        )
+
 
 def load_regions(request):
 
