@@ -3,179 +3,166 @@
 {% load static %}
 
 {% block title %}
-    Eventos | Inicio
+Eventos | Inicio
 {% endblock %}
 
 {% block extra_css %}
 
-<link
-    rel="stylesheet"
-    href="{% static 'main/css/styles.css' %}"
->
+<link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
 
 {% endblock %}
 
 {% block content %}
 
-    <!-- =========================
+<!-- =========================
         HERO
     ========================== -->
 
-    <header class="hero">
+<header class="hero">
 
-        <img src="{% static 'img/portada.jpg' %}" alt="Show en vivo">
+    <img src="{% static 'img/portada.jpg' %}" alt="Show en vivo">
 
-        <div class="hero-overlay"></div>
+    <div class="hero-overlay"></div>
 
-        <div class="hero-content">
-            <h1>
-                Viví la emoción de los mejores espectáculos
-            </h1>
+    <div class="hero-content">
+        <h1>
+            Viví la emoción de los mejores espectáculos
+        </h1>
 
-            <p>
-                Conciertos, festivales, teatro y eventos únicos.
-                Descubrí experiencias inolvidables y conseguí tus entradas.
-            </p>
-        </div>
+        <p>
+            Conciertos, festivales, teatro y eventos únicos.
+            Descubrí experiencias inolvidables y conseguí tus entradas.
+        </p>
+    </div>
 
-    </header>
+</header>
 
-    <!-- =========================
+<!-- =========================
         TRANSICION SUAVE
     ========================== -->
 
-    <div class="wave-divider">
-        <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
-            <path fill="#070b18"
-                d="M0,96L60,117.3C120,139,240,181,360,181.3C480,181,600,139,720,138.7C840,139,960,181,1080,192C1200,203,1320,181,1380,170.7L1440,160L1440,320L0,320Z">
-            </path>
-        </svg>
-    </div>
+<div class="wave-divider">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#070b18"
+            d="M0,96L60,117.3C120,139,240,181,360,181.3C480,181,600,139,720,138.7C840,139,960,181,1080,192C1200,203,1320,181,1380,170.7L1440,160L1440,320L0,320Z">
+        </path>
+    </svg>
+</div>
 
-    <!-- =========================
+<!-- =========================
         DESTACADOS
     ========================== -->
 
-    <section>
+<section>
 
-        <h2 class="section-title">
-            Destacados
-        </h2>
+    <h2 class="section-title">
+        Destacados
+    </h2>
 
-        <div class="cards-grid">
+    <div class="cards-grid">
 
-            {% for i in dashboard %}
-            <a href="{% url 'espectaculo' i.id %}">
-                <div class="card">
-                    <img src="{% static 'img/portada.jpg' %}" alt="Show">
-
-                    <div class="card-overlay"></div>
-
-                    <div class="card-info">
-                        <h3>{{i.title}}</h3>
-                        <p>{{i.date}}</p>
-                    </div>
-                </div>
-            </a>
-            {% endfor %}
-
-        </div>
-
-    </section>
-
-    <!-- =========================
-        SHOWS
-    ========================== -->
-
-    <section>
-
-        <h2 class="section-title">
-            Shows
-        </h2>
-
-        <div class="cards-grid">
-
-            {% for i in "12345678" %}
-
+        {% for i in dashboard %}
+        <a href="{% url 'espectaculo' i.id %}">
             <div class="card">
-                <img src="{% static 'img/portada.jpg' %}" alt="Show">
+                <img src="{{ i.image_url }}" alt="{{ i.title }}" >
 
                 <div class="card-overlay"></div>
 
                 <div class="card-info">
-                    <h3>Artista / Evento</h3>
-                    <p>La Plata • 12 Dic</p>
+                    <h3>{{i.title}}</h3>
+                    <p>{{i.date}}</p>
                 </div>
             </div>
+        </a>
+        {% endfor %}
 
-            {% endfor %}
+    </div>
 
-        </div>
+</section>
 
-        <div class="center-button">
-            <button class="btn btn-primary">
-                Mostrar más
-            </button>
-        </div>
+<!-- =========================
+        SHOWS
+    ========================== -->
 
-    </section>
+<section>
 
-    <!-- =========================
+    <h2 class="section-title">
+        Shows
+    </h2>
+
+    <div class="cards-grid">
+
+        {% for i in all_dashboard %}
+        <a href="{% url 'espectaculo' i.id %}">
+            <div class="card">
+                <img src="{{ i.image_url }}" alt="{{ i.title }}" >
+
+                <div class="card-overlay"></div>
+
+                <div class="card-info">
+                    <h3>{{i.title}}</h3>
+                    <p>{{i.date}}</p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+
+    </div>
+
+    <div class="center-button">
+        <button class="btn btn-primary">
+            Mostrar más
+        </button>
+    </div>
+
+</section>
+
+<!-- =========================
         PUBLICIDAD
     ========================== -->
 
-    <section>
+<section>
 
-        <div class="ads-grid">
+    <div class="ads-grid">
 
-            {% for i in "1234" %}
+        {% for i in "1234" %}
 
-            <div class="ad">
-                <img src="{% static 'img/publicidad.jpg' %}" alt="Publicidad">
-            </div>
-
-            {% endfor %}
-
+        <div class="ad">
+            <img src="{% static 'img/publicidad.jpg' %}" alt="Publicidad">
         </div>
 
-    </section>
+        {% endfor %}
 
-    <!-- =========================
+    </div>
+
+</section>
+
+<!-- =========================
         BUSQUEDA
     ========================== -->
 
-    <section>
+<section>
 
-        <div class="search-section">
+    <div class="search-section">
 
-            <h2 class="section-title" style="text-align:center;">
-                Encontrá tu próximo show
-            </h2>
+        <h2 class="section-title" style="text-align:center;">
+            Encontrá tu próximo show
+        </h2>
 
-            <form class="search-container">
+        <form method="GET" action="{% url 'buscar_shows' %}" class="search-container">
+            <input type="text" name="q" placeholder="Buscar por artista, estadio o ciudad...">
 
-                <input
-                    type="text"
-                    placeholder="Buscar espectáculos..."
-                >
+            <select name="category">
+                <option value="">Todas las categorías</option>
+                {% for cat in categorias %}
+                <option value="{{ cat.slug }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
 
-                <select>
-                    <option>Categorías</option>
-                    <option>Rock</option>
-                    <option>Pop</option>
-                    <option>Electrónica</option>
-                    <option>Teatro</option>
-                    <option>Festivales</option>
-                </select>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
 
-                <button class="btn btn-primary">
-                    Buscar
-                </button>
+    </div>
 
-            </form>
-
-        </div>
-
-    </section>
-
+</section>
 {% endblock %}

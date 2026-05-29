@@ -406,6 +406,192 @@ a{
 .register-text a:hover{
     text-decoration:underline;
 }
+/* ===================================
+    Verificar Codigo de Login
+==================================== */
+.verify-login-section{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #ffffff,
+        #f7f8fc
+    );
+}
+
+.verify-card{
+
+    width:100%;
+    max-width:600px;
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:50px;
+
+    text-align:center;
+
+    box-shadow:
+    0 15px 40px rgba(
+        0,
+        0,
+        0,
+        0.08
+    );
+
+    border:
+    1px solid rgba(
+        124,
+        58,
+        237,
+        0.12
+    );
+}
+
+.verify-icon{
+
+    font-size:60px;
+
+    margin-bottom:25px;
+}
+
+.verify-card h1{
+
+    font-size:34px;
+
+    color:#111827;
+
+    margin-bottom:15px;
+}
+
+.subtitle{
+
+    color:#4b5563;
+
+    margin-bottom:10px;
+}
+
+.secondary-text{
+
+    color:#6b7280;
+
+    margin-bottom:35px;
+}
+
+.code-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    margin-bottom:30px;
+}
+
+.code-digit{
+
+    width:65px;
+
+    height:75px;
+
+    border-radius:16px;
+
+    border:
+    2px solid #e5e7eb;
+
+    text-align:center;
+
+    font-size:32px;
+
+    font-weight:700;
+
+    transition:0.3s;
+}
+
+.code-digit:focus{
+
+    outline:none;
+
+    border-color:#7c3aed;
+
+    box-shadow:
+    0 0 0 4px rgba(
+        124,
+        58,
+        237,
+        0.15
+    );
+}
+
+.verify-btn{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    transition:0.3s;
+
+    background:
+    linear-gradient(
+        135deg,
+        #7c3aed,
+        #2563eb
+    );
+}
+
+.verify-btn:hover{
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+    0 10px 25px rgba(
+        124,
+        58,
+        237,
+        0.25
+    );
+}
+
+.error-box{
+
+    background:#fef2f2;
+
+    color:#b91c1c;
+
+    border:
+    1px solid #fecaca;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    margin-bottom:25px;
+}
 
 /* ===================================
     Email no verificado

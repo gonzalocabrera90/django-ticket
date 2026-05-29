@@ -6,7 +6,7 @@ from django.db import connection
 from .models import LoginLog
 
 import random
-
+from django.contrib import messages
 from register.utils import (
     send_activation_email
 )
@@ -30,21 +30,6 @@ from register.decorators import (
     unauthenticated_user
 )
 
-# def login_view(request):
-#     recent_logins = LoginLog.objects.order_by('-timestamp')[:5]
-    
-#     db_name = connection.settings_dict.get('NAME', 'N/A')
-#     db_user = connection.settings_dict.get('USER', 'N/A')
-
-#     context = {
-#         'recent_logins': recent_logins,
-#         'url_name': 'Login (/login)',
-#         'current_url': '/login',
-#         'db_name': db_name,
-#         'db_user': db_user
-#     }
-#     return render(request, 'login/login.html', context)
-
 @unauthenticated_user
 def login_view(request):
 
@@ -55,22 +40,23 @@ def login_view(request):
         password = request.POST.get(
             'password'
         )
-        user = authenticate(
-            request,
-            username=email,
-            password=password
-        )
+        # user = authenticate(
+        #     request,
+        #     username=email,
+        #     password=password
+        # )
+        try:
 
-        if user is not None:
+            user = User.objects.get(
+                email=email
+            )
+
+        except User.DoesNotExist:
+
+            user = None
+
+        if user and user.check_password(password):
             if not user.is_active:
-                # return render(
-                #     request,
-                #     'register/login.html',
-                #     {
-                #         'error':
-                #         'Cuenta no activada'
-                #     }
-                # )
                 request.session[
                     'inactive_user_id'
                 ] = user.id
@@ -209,7 +195,7 @@ def verify_login_code_view(request):
         else:
             return render(
                 request,
-                'register/verify_login.html',
+                'login/verify_login.html',
                 {
                     'error':
                     'Código inválido'

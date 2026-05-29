@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.db import connection
-
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
-from .models import ShowPlace, Show, ShowSector, MapLayoutObject
+from .models import ShowPlace, Show, ShowSector, MapLayoutObject, Category
 
 def shows_view(request):
     shows = Show.objects.all().order_by('date')
@@ -19,6 +19,38 @@ def shows_view(request):
     }
     return render(request, 'shows/shows.html', context)
 
+def buscar_shows(request):
+    """Vista exclusiva para procesar y renderizar los resultados de búsqueda"""
+    categorias = Category.objects.all()
+    
+    # Capturamos los parámetros del formulario GET
+    query_texto = request.GET.get('q', '').strip()
+    query_categoria = request.GET.get('category', '').strip()
+    
+    # IMPORTANTE: Eliminamos 'place' del select_related porque no existe en Show.
+    # Usamos distinct() al final para evitar que si un show tiene 5 sectores, 
+    # aparezca 5 veces repetido en los resultados de búsqueda.
+    resultados = Show.objects.select_related('category').order_by('date').distinct()
+    
+    # Aplicamos filtros si el usuario ingresó datos
+    if query_texto:
+        resultados = resultados.filter(
+            Q(title__icontains=query_texto) |
+            Q(description__icontains=query_texto) |
+            # Corregimos las rutas cruzando a través de show_sectors
+            Q(show_sectors__sector__place__name__icontains=query_texto) |
+            Q(show_sectors__sector__place__address__city__icontains=query_texto)
+        ).distinct() # El distinct acá refuerza que no se dupliquen por coincidir en varios sectores
+        
+    if query_categoria:
+        resultados = resultados.filter(category__slug=query_categoria)
+        
+    return render(request, 'shows/resultados_busqueda.html', {
+        'shows': resultados,
+        'categorias': categorias,
+        'query_texto': query_texto,
+        'query_categoria': query_categoria,
+    })
 
 def mapa_espectaculo_view(request, place_id):
     # Buscamos el lugar por su ID trayendo de forma eficiente sus sectores relacionados

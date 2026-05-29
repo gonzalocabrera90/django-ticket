@@ -49,6 +49,32 @@ class MapLayoutObject(models.Model):
     object_type = models.CharField(max_length=20, default='INFRA') 
     geometry = models.JSONField()
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Nombre de la Categoría")
+    # El slug sirve para armar URLs estéticas (ej: 'rock-internacional', 'teatro', 'electronica')
+    slug = models.SlugField(max_length=100, unique=True, verbose_name="Slug / Identificador URL")
+    
+    # ATRIBUTOS ESPECÍFICOS DE DISEÑO (Opcionales pero muy útiles)
+    icon_class = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True, 
+        help_text="Clase de FontAwesome o Bootstrap Icons (ej: 'bi-music-note-beamed')."
+    )
+    color_hex = models.CharField(
+        max_length=7, 
+        default="#007bff", 
+        help_text="Color en formato HEX para las etiquetas del frontend (ej: '#ffc107')."
+    )
+
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+
+    def __str__(self):
+        return self.name
+
+
 class Show(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -56,8 +82,19 @@ class Show(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     image_url = models.URLField(blank=True, null=True)
 
+    category = models.ForeignKey(
+        Category, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name="shows",
+        verbose_name="Categoría"
+    )
+
     def __str__(self):
         return self.title
+
+
 
 # NUEVO MODELO: Lógica comercial por cada función/Show
 class ShowSector(models.Model):

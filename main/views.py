@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.db import connection
 from .models import MainDashboard
-from shows.models import Show
+from shows.models import Show, Category
 from register.models import User
 from ticket.models import Ticket
 
 def index_view(request):
-    dashboard = Show.objects.all()
-    print(dashboard)
+    dashboard = Show.objects.order_by("-date")[:4]
+    all_dashboard = Show.objects.all()
+    categorias = Category.objects.all()
     if not dashboard:
         dashboard = MainDashboard(
             title="DjangoTicket Portal",
@@ -26,6 +27,8 @@ def index_view(request):
 
     context = {
         'dashboard': dashboard,
+        'all_dashboard': all_dashboard,
+        'categorias': categorias,
         'stats': stats,
         'url_name': 'Ruta Raíz (/)',
         'current_url': '/',

@@ -1,18 +1,188 @@
-<form method="POST">
+{% extends 'base.html' %}
 
-    {% csrf_token %}
+{% load static %}
 
-    <input
-        type="text"
-        name="code"
-        maxlength="6"
-        placeholder="Código de 6 dígitos"
-    >
+{% block title %}
+Verificar acceso
+{% endblock %}
 
-    <button type="submit">
+{% block extra_css %}
 
-        Verificar
+<link
+    rel="stylesheet"
+    href="{% static 'login/css/styles.css' %}"
+>
 
-    </button>
+{% endblock %}
 
-</form>
+{% block content %}
+
+<section class="verify-login-section">
+
+    <div class="verify-card">
+
+        <div class="verify-icon">
+
+            🔐
+
+        </div>
+
+        <h1>
+
+            Verificación de acceso
+
+        </h1>
+
+        <p class="subtitle">
+
+            Te enviamos un código de seguridad a tu correo electrónico.
+
+        </p>
+
+        <p class="secondary-text">
+
+            Ingresá el código de 6 dígitos para completar el inicio de sesión.
+
+        </p>
+
+        {% if error %}
+
+            <div class="error-box">
+
+                {{ error }}
+
+            </div>
+
+        {% endif %}
+
+        <form method="POST" id="verify-form">
+
+            {% csrf_token %}
+
+            <div class="code-container">
+
+                <input type="text" maxlength="1" class="code-digit">
+                <input type="text" maxlength="1" class="code-digit">
+                <input type="text" maxlength="1" class="code-digit">
+                <input type="text" maxlength="1" class="code-digit">
+                <input type="text" maxlength="1" class="code-digit">
+                <input type="text" maxlength="1" class="code-digit">
+
+            </div>
+
+            <input
+                type="hidden"
+                name="code"
+                id="full-code"
+            >
+
+            <button
+                type="submit"
+                class="verify-btn"
+            >
+
+                Verificar acceso
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<script>
+
+const digits =
+    document.querySelectorAll(
+        '.code-digit'
+    );
+
+const fullCode =
+    document.getElementById(
+        'full-code'
+    );
+
+digits.forEach(
+    (input, index) => {
+
+        input.addEventListener(
+            'input',
+            () => {
+
+                input.value =
+                    input.value.replace(
+                        /[^0-9]/g,
+                        ''
+                    );
+
+                if(
+                    input.value &&
+                    index < digits.length - 1
+                ){
+                    digits[
+                        index + 1
+                    ].focus();
+                }
+
+                updateCode();
+            }
+        );
+
+        input.addEventListener(
+            'keydown',
+            (event) => {
+
+                if(
+                    event.key ===
+                    'Backspace'
+                ){
+
+                    if(
+                        !input.value &&
+                        index > 0
+                    ){
+
+                        digits[
+                            index - 1
+                        ].focus();
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+);
+
+function updateCode(){
+
+    fullCode.value =
+        Array.from(
+            digits
+        )
+        .map(
+            input => input.value
+        )
+        .join('');
+
+}
+
+document
+.getElementById(
+    'verify-form'
+)
+.addEventListener(
+    'submit',
+    () => {
+
+        updateCode();
+
+    }
+);
+
+</script>
+
+{% endblock %}
