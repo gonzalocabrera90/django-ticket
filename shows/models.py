@@ -1,10 +1,14 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
+# ==========================================
+# 1. ENTORNO FÍSICO / INFRAESTRUCTURA
+# ==========================================
+
 class ShowPlace(models.Model):
+    """El Estadio / Teatro (Infraestructura fija)"""
     name = models.CharField(max_length=200, verbose_name="Nombre del Lugar")
     capacity = models.PositiveIntegerField(verbose_name="Capacidad Total del Lugar")
-    # Definimos el viewBox del mapa para que el SVG sepa cómo escalar (ej: "0 0 1000 1000")
     viewbox = models.CharField(
         max_length=50, 
         default="0 0 1000 1000", 
@@ -16,8 +20,7 @@ class ShowPlace(models.Model):
 
 
 class Address(models.Model):
-    # Relación uno a uno o Clave Foránea apuntando al lugar. 
-    # Usamos OneToOneField si cada lugar tiene una única dirección física.
+    """Dirección física unívoca de un lugar"""
     place = models.OneToOneField(ShowPlace, on_delete=models.CASCADE, related_name="address")
     street = models.CharField(max_length=255, verbose_name="Calle y Número")
     city = models.CharField(max_length=100, verbose_name="Ciudad")
@@ -28,7 +31,9 @@ class Address(models.Model):
     def __str__(self):
         return f"{self.street}, {self.city}"
 
+
 class Sector(models.Model):
+    """El sector físico de cemento dentro de un estadio (Infraestructura fija)"""
     place = models.ForeignKey(ShowPlace, on_delete=models.CASCADE, related_name="sectors", verbose_name="Lugar")
     name = models.CharField(max_length=100, verbose_name="Nombre del Sector")
     slug = models.SlugField(max_length=100, help_text="Identificador único para el ID del SVG.")
@@ -43,29 +48,26 @@ class Sector(models.Model):
 
 
 class MapLayoutObject(models.Model):
+    """Elementos decorativos fijos del mapa SVG"""
     place = models.ForeignKey(ShowPlace, on_delete=models.CASCADE, related_name='layout_objects')
     name = models.CharField(max_length=100)
-    # Guardamos una marca para saber si requiere etiqueta de texto (ej: 'STAGE')
     object_type = models.CharField(max_length=20, default='INFRA') 
     geometry = models.JSONField()
 
+    def __str__(self):
+        return f"{self.place.name} - {self.name} ({self.object_type})"
+
+
+# ==========================================
+# 2. ENTORNO COMERCIAL / MARKETING
+# ==========================================
+
 class Category(models.Model):
+    """Categorías de los espectáculos"""
     name = models.CharField(max_length=100, verbose_name="Nombre de la Categoría")
-    # El slug sirve para armar URLs estéticas (ej: 'rock-internacional', 'teatro', 'electronica')
     slug = models.SlugField(max_length=100, unique=True, verbose_name="Slug / Identificador URL")
-    
-    # ATRIBUTOS ESPECÍFICOS DE DISEÑO (Opcionales pero muy útiles)
-    icon_class = models.CharField(
-        max_length=50, 
-        blank=True, 
-        null=True, 
-        help_text="Clase de FontAwesome o Bootstrap Icons (ej: 'bi-music-note-beamed')."
-    )
-    color_hex = models.CharField(
-        max_length=7, 
-        default="#007bff", 
-        help_text="Color en formato HEX para las etiquetas del frontend (ej: '#ffc107')."
-    )
+    icon_class = models.CharField(max_length=50, blank=True, null=True, help_text="Clase de FontAwesome o Bootstrap Icons.")
+    color_hex = models.CharField(max_length=7, default="#007bff", help_text="Color en formato HEX para las etiquetas.")
 
     class Meta:
         verbose_name = "Categoría"
@@ -75,52 +77,55 @@ class Category(models.Model):
         return self.name
 
 
-class Show(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    date = models.DateTimeField()
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    image_url = models.URLField(blank=True, null=True)
-
-    category = models.ForeignKey(
-        Category, 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
-        related_name="shows",
-        verbose_name="Categoría"
-    )
+class Event(models.Model):
+    """El Artista / La Gira (Contenido estático de Marketing)"""
+    title = models.CharField(max_length=200, verbose_name="Nombre del Evento / Banda")
+    description = models.TextField(verbose_name="Descripción del Evento")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name="events")
+    image_url = models.URLField(blank=True, null=True, verbose_name="URL de la Imagen")
 
     def __str__(self):
         return self.title
 
 
+class Show(models.Model):
+    """La Función específica (Día, hora y lugar de una fecha real)"""
+    # Cambiamos el orden: Event ya existe arriba, permitiendo la relación nativa limpia
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="shows")
+    place = models.ForeignKey(ShowPlace, on_delete=models.PROTECT, related_name="shows")
+    date = models.DateTimeField(verbose_name="Fecha y hora de la función")
+    
+    # Lo mantenemos útil como "Precio Base Mínimo promocional" para la cartelera
+    price = models.DecimalField(max_digits=8, decimal_places=2, help_text="Precio mínimo estimado para marketing")
 
-# NUEVO MODELO: Lógica comercial por cada función/Show
+    def __str__(self):
+        return f"{self.event.title} - {self.date.strftime('%d/%m/%Y %H:%M')} hs"
+
+
 class ShowSector(models.Model):
+    """El inventario comercial e ingresos de una función/noche determinada"""
     show = models.ForeignKey(Show, on_delete=models.CASCADE, related_name="show_sectors")
     sector = models.ForeignKey(Sector, on_delete=models.CASCADE, related_name="show_sectors")
-    
-    # El precio ahora depende del show dinámicamente
     price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Precio para este Show")
     
-    # El inventario se controla por función, no por estadio fijo
     sold = models.PositiveIntegerField(default=0, verbose_name="Entradas Vendidas")
     reserved = models.PositiveIntegerField(default=0, verbose_name="Entradas Reservadas")
-    available = models.PositiveIntegerField(default=0, verbose_name="Entradas Disponibles")
 
     class Meta:
-        # Evita que para un mismo Show se duplique el mismo Sector
         unique_together = ('show', 'sector')
 
+    @property
+    def available(self):
+        """Calcula las entradas disponibles en tiempo real sin guardarlas en la BD"""
+        return self.sector.capacity - (self.sold + self.reserved)
+
     def save(self, *args, **kwargs):
-        # Lógica de negocio heredada: Validar contra la capacidad física del sector
-        self.available = self.sector.capacity - (self.sold + self.reserved)
-        
+        # La validación se sigue sirviendo del cálculo en tiempo real
         if self.available < 0:
-            raise ValidationError(f"La cantidad supera la capacidad física de {self.sector.name} ({self.sector.capacity}).")
-            
+            raise ValidationError(
+                f"La suma de ventas y reservas supera la capacidad física de {self.sector.name} ({self.sector.capacity})."
+            )
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.show.title} - {self.sector.name} (${self.price})"
+        return f"{self.show.event.title} ({self.show.date.strftime('%d/%m')}) - {self.sector.name} (${self.price})"

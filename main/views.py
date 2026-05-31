@@ -1,13 +1,17 @@
 from django.shortcuts import render
 from django.db import connection
 from .models import MainDashboard
-from shows.models import Show, Category
+from shows.models import Show, Category, Event
 from register.models import User
 from ticket.models import Ticket
 
 def index_view(request):
-    dashboard = Show.objects.order_by("-date")[:4]
-    all_dashboard = Show.objects.all()
+    dashboard = Event.objects.select_related('category').filter(
+        shows__isnull=False
+    ).distinct()[:4]
+    all_dashboard = Event.objects.select_related('category').filter(
+        shows__isnull=False
+    ).distinct()[:16]
     categorias = Category.objects.all()
     if not dashboard:
         dashboard = MainDashboard(
@@ -17,7 +21,7 @@ def index_view(request):
     
     # Query database stats to show DB connectivity
     stats = {
-        'total_shows': Show.objects.count(),
+        'total_shows': Event.objects.count(),
         'total_users': User.objects.count(),
         'total_tickets': Ticket.objects.count(),
     }

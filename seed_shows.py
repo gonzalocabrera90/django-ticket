@@ -86,7 +86,8 @@ shows_pool = [
     {"title": "Depeche Mode - Memento Mori", "cat": "Electrónica", "desc": "Los pioneros del synth-rock regresan en una noche nostálgica y electrónica.", "dias": 145, "intl": True},
     {"title": "Pearl Jam - Dark Matter", "cat": "Rock", "desc": "Eddie Vedder y los suyos traen el espíritu intacto del grunge de Seattle.", "dias": 150, "intl": True},
     {"title": "Gorillaz - Cracker Island Live", "cat": "Pop", "desc": "Damon Albarn fusiona visuales animadas en pantallas con hip-hop y dub.", "dias": 155, "intl": True},
-    {"title": "David Guetta - Laser Arena Live", "cat": "Electrónica", "desc": "Una noche dedicada al EDM con un despliegue audiovisual de pantallas láser.", "dias": 160, "intl": True},
+    {"title": "Eric Clapton", "description": "El espíritu intacto del rock del britanico, en un show enérgico y cambiante.", "dias_a_sumar": 150, "es_internacional": True},
+    {"title": "Mark Knopfler", "description": "El regreso del escoses en una noche nostálgica y de alto impacto.", "dias_a_sumar": 145, "es_internacional": True}
 ]
 
 # Plantillas de Precios

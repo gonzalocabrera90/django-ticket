@@ -1,0 +1,280 @@
+import random
+from datetime import timedelta
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+from django.utils.text import slugify
+from shows.models import ShowPlace, Address, Sector, MapLayoutObject, Category, Event, Show, ShowSector
+
+# INFRAESTRUCTURA SUMINISTRADA ANTERIORMENTE
+ESTADIOS_DATA = [
+    {
+        "name": "Estadio José María Minella",
+        "capacity": 42000,
+        "viewbox": "0 0 1000 1000",
+        "address": {"street": "Av. Mundial '78 y Olimpíadas", "city": "Mar del Plata", "state": "Buenos Aires", "zip_code": "B7600"},
+        "sectors": [
+            {"name": "Campo Frontal", "capacity": 8000, "geometry": {"type": "path", "d": "M703.5 505C700.457 559.271 693.413 583.853 668.349 614C621.818 629.332 585.394 632.393 509.5 632C441.378 631.773 405.42 628.976 349.651 614C324.522 582.688 315.868 558.735 310 505H703.5Z", "fill": "#1C7D88"}},
+            {"name": "Campo Trasero", "capacity": 10000, "geometry": {"type": "path", "d": "M310 500C313.047 445.315 320.099 420.547 345.196 390.169C391.785 374.72 430.51 358.104 506.5 358.5C574.709 358.729 613.161 375.08 669 390.169C694.162 421.72 698.124 445.856 704 500H310Z", "fill": "#4D38AA"}},
+            {"name": "Platea Central Destechada", "capacity": 9000, "geometry": {"type": "path", "d": "M292.5 238.5C461.882 162.772 555.906 164.867 722 243L672 383C538.258 335.878 466.814 335.918 346 383L292.5 238.5Z", "fill": "#B18484"}},
+            {"name": "Platea Lateral Derecha", "capacity": 7300, "geometry": {"type": "path", "d": "M728.5 246C808.75 314.403 840.176 366.647 857 500C839.159 643.625 809.107 696.365 728.5 753L675.5 614C720.231 525.779 718.27 475.584 675.5 385L728.5 246Z", "fill": "#D82E2E"}},
+            {"name": "Platea Lateral Izquierda", "capacity": 7300, "geometry": {"type": "path", "d": "M283.5 753C203.25 684.597 171.824 632.353 155 499C172.841 355.375 202.893 302.635 283.5 246L336.5 385C291.769 473.221 293.73 523.416 336.5 614L283.5 753Z", "fill": "#D82E2E"}}
+        ],
+        "layout_objects": [
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 422, "y": 635, "width": 174, "height": 59, "fill": "#222222"}}
+        ]
+    },
+    {
+        "name": "Movistar Arena",
+        "capacity": 15000,
+        "viewbox": "0 0 1000 1000",
+        "address": {"street": "Humboldt 450", "city": "CABA", "state": "Buenos Aires", "zip_code": "C1414"},
+        "sectors": [
+            {"name": "Platea Baja Centro", "capacity": 500, "geometry": {"type": "path", "d": "M629.5 263.5L596 358.25H397.5L357 263.5H629.5Z", "fill": "#29B92E"}},
+            {"name": "Platea Alta Centro", "capacity": 600, "geometry": {"type": "path", "d": "M666.5 195L643.5 259H351.5L325 195H666.5Z", "fill": "#B331C7"}},
+            {"name": "Platea Baja Codo Derecho", "capacity": 360, "geometry": {"type": "path", "d": "M714 347.5L624 387.5L601 369L643.5 270L714 347.5Z", "fill": "#29B92E"}},
+            {"name": "Platea Alta Codo Derecho", "capacity": 500, "geometry": {"type": "path", "d": "M677.5 202.5L790 316L737.5 347L646.5 263.5L677.5 202.5Z", "fill": "#B331C7"}},
+            {"name": "Platea Baja Codo Izquierdo", "capacity": 360, "geometry": {"type": "path", "d": "M345.5 268.5L394 365.5L370 393L269 345.5L345.5 268.5Z", "fill": "#29B92E"}},
+            {"name": "Platea Alta Codo Izquierdo", "capacity": 500, "geometry": {"type": "path", "d": "M312.5 202.5L345.5 263.5L263.5 344.5L202.5 315L312.5 202.5Z", "fill": "#B331C7"}},
+            {"name": "Platea Baja Lateral Derecha", "capacity": 1900, "geometry": {"type": "path", "d": "M630.95 398.5L723.5 357V715L630.95 750.5V398.5Z", "fill": "#29B92E"}},
+            {"name": "Platea Alta Lateral Derecha", "capacity": 2100, "geometry": {"type": "path", "d": "M735 355.5L795.5 322.5V701L735 728.5V355.5Z", "fill": "#B331C7"}},
+            {"name": "Platea Baja Lateral Izquierda", "capacity": 1900, "geometry": {"type": "path", "d": "M270.5 355.5L366.5 401V747.5L270.5 718.5V355.5Z", "fill": "#29B92E"}},
+            {"name": "Platea Alta Lateral Izquierdo", "capacity": 2100, "geometry": {"type": "path", "d": "M197.5 323L257 350V729.5L197.5 699.5V323Z", "fill": "#B331C7"}},
+            {"name": "Campo VIP", "capacity": 1000, "geometry": {"type": "rect", "x": 384, "y": 662, "width": 231, "height": 76, "fill": "#1a427d"}},
+            {"name": "Campo General", "capacity": 2300, "geometry": {"type": "rect", "x": 384, "y": 491, "width": 231, "height": 165, "fill": "#2056A7"}},
+            {"name": "Campo Trasero", "capacity": 700, "geometry": {"type": "rect", "x": 384, "y": 391, "width": 231, "height": 92, "fill": "#2056A7"}},
+        ],
+        "layout_objects": [
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 439, "y": 744, "width": 123, "height": 55, "fill": "#222222"}}
+        ]
+    },
+    {
+        "name": "Estadio Luna Park",
+        "capacity": 9000,
+        "viewbox": "0 0 1000 1000",
+        "address": {"street": "Av. Eduardo Madero 420", "city": "CABA", "state": "Buenos Aires", "zip_code": "C1106"},
+        "sectors": [
+            {"name": "Campo", "capacity": 3400, "geometry": {"type": "path", "d": "M249 414H771V608H249V414Z", "fill": "#50DF43"}},
+            {"name": "Platea Lateral Madero", "capacity": 900, "geometry": {"type": "path", "d": "M789.5 480.5H923V622.5H789.5V480.5Z", "fill": "#3D41FF"}},
+            {"name": "Platea Pullman Este", "capacity": 1180, "geometry": {"type": "path", "d": "M876.5 291L921.54 337.5V471.5H788V418.5L763.5 397H677.5V291H876.5Z", "fill": "#1417D2"}},
+            {"name": "Super Pullman", "capacity": 1500, "geometry": {"type": "path", "d": "M347.5 280H671V397H347.5V280Z", "fill": "#400C99"}},
+            {"name": "Platea Pullman Oeste", "capacity": 1180, "geometry": {"type": "path", "d": "M95 340.5L154.5 291H341V397H254L227 422V469.5H95V340.5Z", "fill": "#1417D2"}},
+            {"name": "Platea Lateral Corrientes", "capacity": 900, "geometry": {"type": "rect", "x": 95, "y": 481, "width": 132, "height": 142, "fill": "#3D41FF"}},
+            {"name": "Sector Discapacitados", "capacity": 150, "geometry": {"type": "rect", "x": 702, "y": 614, "width": 69, "height": 23, "fill": "#400C99"}}
+        ],
+        "layout_objects": [
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "path", "d": "M382.5 637H629.5V706H382.5V637Z", "fill": "#222222"}}
+        ]
+    },
+    {
+        "name": "Estadio Mâs Monumental River Plate",
+        "capacity": 84567,
+        "viewbox": "0 0 1016 872",
+        "address": {"street": "Av. Pres. Figueroa Alcorta 7597", "city": "CABA", "state": "Buenos Aires", "zip_code": "C1428"},
+        "sectors": [
+            {"name": "Sívori Alta", "capacity": 7000, "geometry": {"type": "path", "d": "M332.5 359.5C273.804 480.754 273.948 552.19 334.5 694L284.5 719.5C221.285 575.715 220 486 292 329.5L332.5 359.5Z", "fill": "#D50700"}},
+            {"name": "San Martín Alta", "capacity": 5000, "geometry": {"type": "path", "d": "M718 321L670.5 349C549.66 225.518 459.294 229.941 336.5 348L296.5 321C425.682 156.882 582.995 157.935 718 321Z", "fill": "#D50700"}},
+            {"name": "Centenario Alta", "capacity": 7000, "geometry": {"type": "path", "d": "M721.5 330.5C787.139 483.218 783.897 569.766 719 720.5L675 691.5C727.697 564.19 729.369 491.779 675 360.5L721.5 330.5Z", "fill": "#D50700"}},
+            {"name": "Sívori Media", "capacity": 4000, "geometry": {"type": "path", "d": "M370 383.5C320.496 495.462 323.55 558.917 370 673L336.42 693C280.772 563.681 277.724 489.199 336.42 362L370 383.5Z", "fill": "#7B708C"}},
+            {"name": "San Martín Media", "capacity": 3500, "geometry": {"type": "path", "d": "M666.5 351.951L632.5 375C552.535 280.185 464.391 280.162 375.5 373.039L340 349.009C460.102 230.707 551.216 227.231 666.5 351.951Z", "fill": "#7B708C"}},
+            {"name": "Sívori Baja (Popular)", "capacity": 6000, "geometry": {"type": "path", "d": "M417 416V645.5L373 670.5C326.351 559.591 325.046 497.41 373 386.5L417 416V645.5Z", "fill": "#FF0505"}},
+            {"name": "Belgrano Baja", "capacity": 3000, "geometry": {"type": "path", "d": "M630 377L590 405H419.5L377.5 376C469.713 279.486 548.514 284.168 630 377Z", "fill": "#FF0909"}},
+            {"name": "Centenario Media", "capacity": 4000, "geometry": {"type": "path", "d": "M637.679 382.5L672.32 362C726.363 499.927 724.694 571.073 672.32 690L637.679 669.5C687.347 555.381 687.64 492.522 637.679 382.5Z", "fill": "#7B708C"}},
+            {"name": "Centenario Baja", "capacity": 10000, "geometry": {"type": "path", "d": "M593.5 413L635 385C683.124 491.961 683.678 553.778 635 667.5L593.5 642.5V413Z", "fill": "#FF0909"}},
+            {"name": "Campo Trasero", "capacity": 18000, "geometry": {"type": "rect", "x": 421, "y": 410, "width": 169, "height": 92, "fill": "#222222"}},
+            {"name": "Campo VIP", "capacity": 12000, "geometry": {"type": "rect", "x": 421, "y": 508, "width": 169, "height": 89, "fill": "#7B708C"}}
+        ],
+        "layout_objects": [
+             {"name": "ESCENARIO PRINCIPAL", "type": "STAGE", "geometry": {"type": "rect", "x": 426, "y": 604, "width": 159, "height": 35, "fill": "#000000"}}
+        ]
+    }
+]
+
+# NUEVO POOL COMPLETADO Y SELECCIONADO POR EL USUARIO
+CATEGORIAS_DATA = [
+    {"name": "Rock", "icon": "bi-music-note-beamed", "color": "#dc3545"},
+    {"name": "Pop", "icon": "bi-stars", "color": "#e83e8c"},
+    {"name": "Trap & Hip-Hop", "icon": "bi-lightning-fill", "color": "#6f42c1"},
+    {"name": "Heavy Metal", "icon": "bi-activity", "color": "#343a40"},
+    {"name": "Electrónica", "icon": "bi-disc-fill", "color": "#007bff"},
+]
+
+SHOWS_POOL = [
+    {"title": "Duki - Americana Tour", "cat": "Trap & Hip-Hop", "desc": "El referente definitivo del trap argentino.", "dias": 15, "intl": False},
+    {"title": "Wos - Descartable", "cat": "Rock", "desc": "Presentación oficial de su nuevo álbum con banda en vivo.", "dias": 20, "intl": False},
+    {"title": "Babasónicos en Concierto", "cat": "Rock", "desc": "La banda más elegante del rock nacional repasa su discografía.", "dias": 25, "intl": False},
+    {"title": "La Renga - Totalmente Poseídos", "cat": "Rock", "desc": "El banquete más esperado del año. Puro rock barrial.", "dias": 30, "intl": False},
+    {"title": "Divididos - 35 Años", "cat": "Rock", "desc": "La aplanadora del rock celebra su trayectoria con un show demoledor.", "dias": 35, "intl": False},
+    {"title": "Fito Páez - El Amor Después del Amor", "cat": "Rock", "desc": "El concierto histórico que celebra el disco más vendido de la historia nacional.", "dias": 40, "intl": False},
+    {"title": "Airbag - Jinetes Cromados", "cat": "Rock", "desc": "Los hermanos Sardelli desatan su potencia eléctrica de guitarras.", "dias": 45, "intl": False},
+    {"title": "Los Fabulosos Cadillacs", "cat": "Rock", "desc": "El regreso de una leyenda de los ritmos latinos, el ska y el rock.", "dias": 50, "intl": False},
+    {"title": "Ciro y los Persas - Ritual 2026", "cat": "Rock", "desc": "Andrés Ciro Martínez revive los clásicos de Los Piojos.", "dias": 55, "intl": False},
+    {"title": "Miranda! - Hotel Miranda VIP", "cat": "Pop", "desc": "El dúo pop más icónico de Latinoamérica transforma el estadio en una fiesta.", "dias": 60, "intl": False},
+    {"title": "Nicki Nicole - Alma Tour", "cat": "Trap & Hip-Hop", "desc": "La artista rosarina despliega su talento y sensibilidad urbana.", "dias": 65, "intl": False},
+    {"title": "Las Pastillas del Abuelo", "cat": "Rock", "desc": "Una velada de rock fusión y letras profundas barriales.", "dias": 70, "intl": False},
+    {"title": "Cuarteto de Nos - Lámina Once", "cat": "Rock", "desc": "Los uruguayos regresan con sus letras filosas e ingeniosas.", "dias": 75, "intl": False},
+    {"title": "El Kuelgue - Hola Precioso", "cat": "Pop", "desc": "Improvisación, absurdo y un despliegue musical exquisito.", "dias": 80, "intl": False},
+    {"title": "Conociendo Rusia - Jet Love", "cat": "Rock", "desc": "El proyecto liderado por Mateo Sujatovich con su pop-rock clásico.", "dias": 85, "intl": False},
+    {"title": "Coldplay - Music of the Spheres II", "cat": "Pop", "desc": "El regreso del fenómeno global con su despliegue de pulseras LED.", "dias": 90, "intl": True},
+    {"title": "Metallica - M72 World Tour", "cat": "Heavy Metal", "desc": "Los gigantes del thrash metal llegan con su imponente escenario central 360.", "dias": 95, "intl": True},
+    {"title": "The Weeknd - After Hours til Dawn", "cat": "Pop", "desc": "Un viaje conceptual a través del synth-pop y R&B espacial.", "dias": 100, "intl": True},
+    {"title": "Arctic Monkeys - AM Tour", "cat": "Rock", "desc": "Alex Turner y compañía traen el rock alternativo de Sheffield con pura elegancia.", "dias": 105, "intl": True},
+    {"title": "Green Day - The Saviors Tour", "cat": "Rock", "desc": "La banda ícono del punk rock celebra los aniversarios de Dookie.", "dias": 110, "intl": True},
+    {"title": "Dua Lipa - Radical Optimism", "cat": "Pop", "desc": "La reina del pop británico llega para encender la pista con sus hits mundiales.", "dias": 115, "intl": True},
+    {"title": "Iron Maiden - Run For Your Lives", "cat": "Heavy Metal", "desc": "La leyenda del heavy metal celebra 50 años de trayectoria junto a Eddie.", "dias": 120, "intl": True},
+    {"title": "Bruno Mars - Live in Concert", "cat": "Pop", "desc": "El showman definitivo del funk y el pop despliega su carisma bailable.", "dias": 125, "intl": True},
+    {"title": "Radiohead - Sonic Experience", "cat": "Rock", "desc": "Una experiencia sónica e introspectiva única de la mano de Thom Yorke.", "dias": 130, "intl": True},
+    {"title": "Travis Scott - Utopia", "cat": "Trap & Hip-Hop", "desc": "El máximo exponente del trap mundial promete desatar los pogos más salvajes.", "dias": 135, "intl": True},
+    {"title": "Foo Fighters - Electric Tour", "cat": "Rock", "desc": "Dave Grohl lidera la celebración eterna del rock de guitarras enérgico.", "dias": 140, "intl": True},
+    {"title": "Depeche Mode - Memento Mori", "cat": "Electrónica", "desc": "Los pioneros del synth-rock regresan en una noche nostálgica y electrónica.", "dias": 145, "intl": True},
+    {"title": "Pearl Jam - Dark Matter", "cat": "Rock", "desc": "Eddie Vedder y los suyos traen el espíritu intacto del grunge de Seattle.", "dias": 150, "intl": True},
+    {"title": "Gorillaz - Cracker Island Live", "cat": "Pop", "desc": "Damon Albarn fusiona visuales animadas en pantallas con hip-hop y dub.", "dias": 155, "intl": True},
+    # Normalizamos estas últimas dos filas para evitar desajustes de llaves:
+    {"title": "Eric Clapton", "cat": "Rock", "desc": "El espíritu intacto del rock del británico, en un show enérgico y cambiante.", "dias": 150, "intl": True},
+    {"title": "Mark Knopfler", "cat": "Rock", "desc": "El regreso del escocés en una noche nostálgica y de alto impacto.", "dias": 145, "intl": True}
+]
+
+class Command(BaseCommand):
+    help = 'Repobla la BD masivamente con 31 eventos asignados de forma inteligente por estadios y categorías.'
+
+    def handle(self, *args, **kwargs):
+        self.stdout.write(self.style.WARNING('=== Vaciando tablas comerciales e infraestructuras ==='))
+        ShowSector.objects.all().delete()
+        Show.objects.all().delete()
+        Event.objects.all().delete()
+        Category.objects.all().delete()
+        MapLayoutObject.objects.all().delete()
+        Sector.objects.all().delete()
+        Address.objects.all().delete()
+        ShowPlace.objects.all().delete()
+        self.stdout.write(self.style.SUCCESS('Base de datos limpia de raíz.'))
+
+        # -------------------------------------------------------------
+        # 1. CARGA AUTOMATIZADA DE INFRAESTRUCTURA SVG REAL
+        # -------------------------------------------------------------
+        self.stdout.write(self.style.WARNING('=== Indexando los 4 Estadios Reales y Polígonos SVG ==='))
+        dict_estadios = {}
+
+        for est_info in ESTADIOS_DATA:
+            lugar = ShowPlace.objects.create(
+                name=est_info["name"],
+                capacity=est_info["capacity"],
+                viewbox=est_info["viewbox"]
+            )
+            dict_estadios[est_info["name"]] = lugar
+
+            adr = est_info["address"]
+            Address.objects.create(
+                place=lugar, street=adr["street"], city=adr["city"], 
+                state=adr["state"], zip_code=adr["zip_code"]
+            )
+
+            for sec_info in est_info["sectors"]:
+                Sector.objects.create(
+                    place=lugar,
+                    name=sec_info["name"],
+                    slug=slugify(sec_info["name"]),
+                    capacity=sec_info["capacity"],
+                    polygon_geometry=sec_info["geometry"]
+                )
+
+            for lay_info in est_info["layout_objects"]:
+                MapLayoutObject.objects.create(
+                    place=lugar, name=lay_info["name"], object_type=lay_info["type"],
+                    geometry=lay_info["geometry"]
+                )
+        
+        self.stdout.write(self.style.SUCCESS('Estadios e Infraestructuras guardados con éxito.'))
+
+        # -------------------------------------------------------------
+        # 2. CARGA DE CATEGORÍAS
+        # -------------------------------------------------------------
+        dict_categorias = {}
+        for cat_info in CATEGORIAS_DATA:
+            categoria = Category.objects.create(
+                name=cat_info["name"],
+                slug=slugify(cat_info["name"]),
+                color_hex=cat_info["color"],
+                icon_class=cat_info["icon"]
+            )
+            dict_categorias[cat_info["name"]] = categoria
+
+        # -------------------------------------------------------------
+        # 3. CONFECCIÓN E INSERCIÓN DE EVENTOS Y FUNCIONES MASIVAS
+        # -------------------------------------------------------------
+        self.stdout.write(self.style.WARNING('=== Generando la Cartelera de 31 Artistas y sus Funciones ==='))
+        ahora = timezone.now()
+
+        # Instancias de estadios para asignación lógica
+        river = dict_estadios["Estadio Mâs Monumental River Plate"]
+        movistar = dict_estadios["Movistar Arena"]
+        luna_park = dict_estadios["Estadio Luna Park"]
+        minella = dict_estadios["Estadio José María Minella"]
+
+        for item in SHOWS_POOL:
+            # Creamos el evento de marketing estático
+            evento = Event.objects.create(
+                title=item["title"],
+                description=item["desc"],
+                category=dict_categorias.get(item["cat"]),
+                image_url=f"https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80"
+            )
+
+            # LÓGICA DE ASIGNACIÓN INTERMEDIA DE ESTADIO
+            # Si es internacional de Pop/Metal va a River. Si es Trap/Electrónica nacional va al Movistar o Luna.
+            if item["intl"] and item["cat"] in ["Pop", "Heavy Metal", "Rock"]:
+                estadio_destino = river
+                cant_funciones = random.choice([2, 3]) # Simulamos múltiples noches (giras de estadios)
+            elif item["cat"] in ["Trap & Hip-Hop", "Electrónica", "Pop"]:
+                estadio_destino = random.choice([movistar, luna_park])
+                cant_funciones = random.choice([1, 2])
+            else:
+                estadio_destino = random.choice([minella, luna_park])
+                cant_funciones = 1
+
+            # Creamos las funciones comerciales calculando las fechas hacia el futuro
+            for f_idx in range(1, cant_funciones + 1):
+                # Desfasamos las noches consecutivas sumando días adicionales
+                fecha_funcion = ahora + timedelta(days=item["dias"] + (f_idx - 1))
+                
+                # Seteamos un precio base sugerido comercial inteligente
+                precio_base_mkt = 50000.00 if item["intl"] else 25000.00
+
+                show = Show.objects.create(
+                    event=evento,
+                    place=estadio_destino,
+                    date=fecha_funcion,
+                    price=precio_base_mkt
+                )
+
+                # Generamos el inventario real para cada sector de ese estadio en esa noche específica
+                for sector in estadio_destino.sectors.all():
+                    # Calculamos tarifas coherentes basadas en las palabras del sector
+                    if "VIP" in sector.name or "Frontal" in sector.name or "Centro" in sector.name:
+                        tarifa = precio_base_mkt * 2
+                    elif "Alta" in sector.name or "Trasero" in sector.name:
+                        tarifa = precio_base_mkt * 0.7
+                    else:
+                        tarifa = precio_base_mkt * 1.2
+
+                    # Recargo opcional si es la última noche por alta demanda
+                    if f_idx > 1:
+                        tarifa += 5000.00
+
+                    # Simulamos ventas y reservas proporcionales al tamaño del sector
+                    porcentaje_ocupacion = random.uniform(0.15, 0.85)
+                    vendidas = int(sector.capacity * porcentaje_ocupacion)
+                    reservadas = random.randint(10, min(100, sector.capacity - vendidas))
+
+                    ShowSector.objects.create(
+                        show=show,
+                        sector=sector,
+                        price=tarifa,
+                        sold=vendidas,
+                        reserved=reservadas
+                    )
+
+        self.stdout.write(self.style.SUCCESS(f'=== ¡Éxito total! Se cargaron los 31 Eventos con sus respectivos ShowSectors en cascada V3. ==='))
+
+# Instanciamos la clase y llamamos al método handle manualmente
+cmd = Command()
+cmd.handle()

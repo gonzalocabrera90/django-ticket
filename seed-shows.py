@@ -15,6 +15,7 @@ print("==== INICIANDO PROCESO DE SEED DATA PARA SHOWS ====")
 
 # 1. Limpieza preventiva de shows anteriores (CASCADE eliminará los ShowSectors automáticamente)
 print("Limpiando shows existentes...")
+ShowSector.objects.all().delete()
 Show.objects.all().delete()
 print(" -> Tabla de Shows e inventarios comerciales limpiada.")
 print("----------------------------------------------------")

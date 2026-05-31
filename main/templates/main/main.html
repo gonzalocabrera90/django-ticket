@@ -61,16 +61,16 @@ Eventos | Inicio
 
     <div class="cards-grid">
 
-        {% for i in dashboard %}
-        <a href="{% url 'espectaculo' i.id %}">
+        {% for evento in dashboard %}
+        <a  href="{% url 'shows' event_id=evento.id %}" >
             <div class="card">
-                <img src="{{ i.image_url }}" alt="{{ i.title }}" >
+                <img src="{{ evento.image_url }}" alt="{{ evento.title }}" >
 
                 <div class="card-overlay"></div>
 
                 <div class="card-info">
-                    <h3>{{i.title}}</h3>
-                    <p>{{i.date}}</p>
+                    <h3>{{evento.title}}</h3>
+                    <!-- <p>{{evento.date}}</p> -->
                 </div>
             </div>
         </a>
@@ -92,16 +92,16 @@ Eventos | Inicio
 
     <div class="cards-grid">
 
-        {% for i in all_dashboard %}
-        <a href="{% url 'espectaculo' i.id %}">
+        {% for evento in all_dashboard %}
+        <a  href="{% url 'shows' event_id=evento.id %}" >
             <div class="card">
-                <img src="{{ i.image_url }}" alt="{{ i.title }}" >
+                <img src="{{ evento.image_url }}" alt="{{ evento.title }}" >
 
                 <div class="card-overlay"></div>
 
                 <div class="card-info">
-                    <h3>{{i.title}}</h3>
-                    <p>{{i.date}}</p>
+                    <h3>{{evento.title}}</h3>
+                    <!-- <p>{{evento.date}}</p> -->
                 </div>
             </div>
         </a>
