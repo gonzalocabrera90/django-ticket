@@ -1,0 +1,12 @@
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1000" height="1000" fill="white"/>
+<path d="M382.5 637H629.5V706H382.5V637Z" fill="black"/>
+<path d="M249 414H771V608H249V414Z" fill="#50DF43"/>
+<path d="M789.5 480.5H923V622.5H789.5V480.5Z" fill="#3D41FF"/>
+<path d="M876.5 291L921.54 337.5V471.5H788V418.5L763.5 397H677.5V291H876.5Z" fill="#1417D2"/>
+<path d="M347.5 280H671V397H347.5V280Z" fill="#400C99"/>
+<path d="M95 340.5L154.5 291H341V397H254L227 422V469.5H95V340.5Z" fill="#1417D2"/>
+<rect x="95" y="481" width="132" height="142" fill="#3D41FF"/>
+<rect x="702" y="614" width="69" height="23" fill="#400C99"/>
+<text fill="white" style="white-space: pre" xml:space="preserve" font-family="Archivo Black" font-size="25" letter-spacing="0em"><tspan x="417.688" y="680.35">ESCENARIO</tspan></text>
+</svg>

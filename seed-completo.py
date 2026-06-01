@@ -20,7 +20,7 @@ ESTADIOS_DATA = [
             {"name": "Platea Lateral Izquierda", "capacity": 7300, "geometry": {"type": "path", "d": "M283.5 753C203.25 684.597 171.824 632.353 155 499C172.841 355.375 202.893 302.635 283.5 246L336.5 385C291.769 473.221 293.73 523.416 336.5 614L283.5 753Z", "fill": "#D82E2E"}}
         ],
         "layout_objects": [
-            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 422, "y": 635, "width": 174, "height": 59, "fill": "#222222"}}
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 422, "y": 635, "width": 174, "height": 59, "fill": "#222222", "font-size": 19, "text_x": 506.962, "text_y": 669.124}}
         ]
     },
     {
@@ -44,7 +44,7 @@ ESTADIOS_DATA = [
             {"name": "Campo Trasero", "capacity": 700, "geometry": {"type": "rect", "x": 384, "y": 391, "width": 231, "height": 92, "fill": "#2056A7"}},
         ],
         "layout_objects": [
-            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 439, "y": 744, "width": 123, "height": 55, "fill": "#222222"}}
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 415, "y": 753, "width": 169, "height": 56, "fill": "#222222", "font-size": 19, "text_x": 496.900, "text_y": 787.346}}
         ]
     },
     {
@@ -62,7 +62,7 @@ ESTADIOS_DATA = [
             {"name": "Sector Discapacitados", "capacity": 150, "geometry": {"type": "rect", "x": 702, "y": 614, "width": 69, "height": 23, "fill": "#400C99"}}
         ],
         "layout_objects": [
-            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "path", "d": "M382.5 637H629.5V706H382.5V637Z", "fill": "#222222"}}
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "path", "d": "M382.5 637H629.5V706H382.5V637Z", "fill": "#222222", "text_x": 502.9, "text_y": 679.85, "font-size": 25}}
         ]
     },
     {
@@ -84,7 +84,7 @@ ESTADIOS_DATA = [
             {"name": "Campo VIP", "capacity": 12000, "geometry": {"type": "rect", "x": 421, "y": 508, "width": 169, "height": 89, "fill": "#7B708C"}}
         ],
         "layout_objects": [
-             {"name": "ESCENARIO PRINCIPAL", "type": "STAGE", "geometry": {"type": "rect", "x": 426, "y": 604, "width": 159, "height": 35, "fill": "#000000"}}
+             {"name": "ESCENARIO PRINCIPAL", "type": "STAGE", "geometry": {"type": "rect", "x": 426, "y": 604, "width": 159, "height": 35, "fill": "#000000", "text_x": 504.756, "text_y": 625.144, "font-size": 15 }}
         ]
     }
 ]

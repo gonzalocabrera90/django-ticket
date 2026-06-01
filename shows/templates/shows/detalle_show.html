@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Registro | EventLive
+Detalle Show | EventLive
 {% endblock %}
 
 {% block extra_css %}
@@ -15,8 +15,7 @@ Registro | EventLive
 {% if show_sectors %}
 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
 
-    <div
-        style="flex: 1; min-width: 300px; margin-top: 100px; display: flex; flex-direction: column; align-items: center;">
+    <div style="flex: 1; min-width: 300px; margin-top: 100px;">
         <div class="teatro-container">
             <h1>{{ show.event }}</h1>
             <p><strong>Fecha:</strong> {{ fecha_formateada }}</p>
@@ -25,7 +24,7 @@ Registro | EventLive
             <hr>
         </div>
 
-        <svg viewBox="{{ place.viewbox }}" width="40%" height="auto" xmlns="http://www.w3.org/2000/svg"
+        <svg viewBox="{{ place.viewbox }}" width="60%" height="auto" xmlns="http://www.w3.org/2000/svg"
             style="display: flex; align-items: center; justify-content: center; margin-top: 100px;">
             <rect width="100%" height="100%" fill="#ffffff" />
 
@@ -46,62 +45,23 @@ Registro | EventLive
             {% for obj in layout_objects %}
             {% if obj.geometry.type == "rect" %}
             <rect x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" width="{{ obj.geometry.width }}"
-                height="{{ obj.geometry.height }}" fill="{{ obj.geometry.fill }}" stroke="#ffffff" stroke-width="1" />
-            {% elif obj.geometry.type == "path" %}
-            <path d="{{ obj.geometry.d }}" fill="{{ obj.geometry.fill }}" />
-            {% endif %}
-            {% endfor %}
-
-            {% for obj in layout_objects %}
-            <g id="layout-obj-{{ forloop.counter }}">
-                {% if obj.geometry.type == "rect" %}
-                <rect x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" width="{{ obj.geometry.width }}"
-                    height="{{ obj.geometry.height }}" fill="{{ obj.geometry.fill|default:'#222222' }}" stroke="#ffffff"
-                    stroke-width="1" />
-                <text x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" {# Usamos dx y dy para desplazar el inicio del
-                    texto al centro exacto del rect #} dx="{{ obj.geometry.width }}px" dy="{{ obj.geometry.height }}px"
-                    fill="#ffffff" font-family="'Montserrat', Arial, sans-serif" font-size="12" font-weight="bold"
-                    text-anchor="middle" dominant-baseline="central"
-                    style="pointer-events: none; letter-spacing: 1px; transform: translate(-50%, -50%);">
-                    {{ obj.name }}
-                </text>
+                height="{{ obj.geometry.height }}" fill="{{ obj.geometry.fill|default:'#333333' }}" />
+            <text fill="white" font-family="Arial, sans-serif" font-size="{{ obj.geometry.font_size }}"
+                text-anchor="middle" font-weight="bold" , letter-spacing="0em" ,>
+                <tspan x="{{ obj.geometry.text_x }}" y="{{ obj.geometry.text_y }}">
+                    {{ obj.name|upper }}
+                </tspan>
 
                 {% elif obj.geometry.type == "path" %}
-                <path d="{{ obj.geometry.d }}" fill="{{ obj.geometry.fill|default:'#222222' }}" />
-                {# Coordenadas calibradas del centro de masa para el path del Luna Park #}
-                <text x="506" y="670" fill="#ffffff" font-family="'Montserrat', Arial, sans-serif" font-size="12"
-                    font-weight="bold" text-anchor="middle" dominant-baseline="central"
-                    style="pointer-events: none; letter-spacing: 1px;">
-                    {{ obj.name }}
+                <path d="{{ obj.geometry.d }}" fill="{{ obj.geometry.fill|default:'#333333' }}" />
+                <text fill="white" font-family="Arial, sans-serif" font-size="{{ obj.geometry.font_size }}"
+                    text-anchor="middle" font-weight="bold" , letter-spacing="0em" ,>
+                    <tspan x="{{ obj.geometry.text_x }}" y="{{ obj.geometry.text_y }}">
+                        {{ obj.name|upper }}
+                    </tspan>
                 </text>
                 {% endif %}
-            </g>
-            {% endfor %}
-            {% for obj in layout_objects %}
-            <g id="layout-obj-{{ forloop.counter }}">
-                {% if obj.geometry.type == "rect" %}
-                <rect x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" width="{{ obj.geometry.width }}"
-                    height="{{ obj.geometry.height }}" fill="{{ obj.geometry.fill|default:'#222222' }}" stroke="#ffffff"
-                    stroke-width="1" />
-                <text x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" {# Usamos dx y dy para desplazar el inicio del
-                    texto al centro exacto del rect #} dx="{{ obj.geometry.width }}px" dy="{{ obj.geometry.height }}px"
-                    fill="#ffffff" font-family="'Montserrat', Arial, sans-serif" font-size="12" font-weight="bold"
-                    text-anchor="middle" dominant-baseline="central"
-                    style="pointer-events: none; letter-spacing: 1px; transform: translate(-50%, -50%);">
-                    {{ obj.name }}
-                </text>
-
-                {% elif obj.geometry.type == "path" %}
-                <path d="{{ obj.geometry.d }}" fill="{{ obj.geometry.fill|default:'#222222' }}" />
-                {# Coordenadas calibradas del centro de masa para el path del Luna Park #}
-                <text x="506" y="670" fill="#ffffff" font-family="'Montserrat', Arial, sans-serif" font-size="12"
-                    font-weight="bold" text-anchor="middle" dominant-baseline="central"
-                    style="pointer-events: none; letter-spacing: 1px;">
-                    {{ obj.name }}
-                </text>
-                {% endif %}
-            </g>
-            {% endfor %}
+                {% endfor %}
         </svg>
     </div>
 </div>

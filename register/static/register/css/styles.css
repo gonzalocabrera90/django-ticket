@@ -115,7 +115,9 @@ a{
     box-shadow:0 8px 20px rgba(123,97,255,0.15);
 }
 
-/* REGISTER ACTIVO */
+/* ===================================
+    REGISTER ACTIVATION
+==================================== */
 
 .nav-link-register{
     background:linear-gradient(
@@ -129,6 +131,202 @@ a{
     color:#d6339c;
     pointer-events: auto; 
     cursor: pointer;
+}
+
+.verification-section{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #ffffff,
+        #f7f8fc
+    );
+}
+
+.verification-card{
+
+    width:100%;
+    max-width:700px;
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:50px;
+
+    text-align:center;
+
+    box-shadow:
+    0 15px 40px rgba(
+        0,
+        0,
+        0,
+        0.08
+    );
+
+    border:
+    1px solid rgba(
+        124,
+        58,
+        237,
+        0.12
+    );
+}
+
+.verification-icon{
+
+    font-size:70px;
+
+    margin-bottom:25px;
+}
+
+.verification-card h1{
+
+    font-size:36px;
+
+    color:#111827;
+
+    margin-bottom:20px;
+}
+
+.main-text{
+
+    font-size:18px;
+
+    color:#374151;
+
+    margin-bottom:15px;
+}
+
+.secondary-text{
+
+    color:#6b7280;
+
+    line-height:1.7;
+
+    margin-bottom:35px;
+}
+
+.info-box{
+
+    text-align:left;
+
+    background:#faf7ff;
+
+    border:
+    1px solid rgba(
+        124,
+        58,
+        237,
+        0.15
+    );
+
+    border-radius:18px;
+
+    padding:25px;
+
+    margin-bottom:25px;
+}
+
+.info-box h3{
+
+    color:#6d28d9;
+
+    margin-bottom:15px;
+}
+
+.info-box ul{
+
+    padding-left:20px;
+}
+
+.info-box li{
+
+    margin-bottom:10px;
+
+    color:#4b5563;
+}
+
+.tip-box{
+
+    background:#eff6ff;
+
+    border:
+    1px solid #bfdbfe;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    margin-bottom:35px;
+}
+
+.tip-box strong{
+
+    display:block;
+
+    color:#1d4ed8;
+
+    margin-bottom:10px;
+}
+
+.tip-box p{
+
+    color:#475569;
+}
+
+.home-btn{
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-decoration:none;
+
+    min-width:240px;
+
+    padding:16px 28px;
+
+    border-radius:16px;
+
+    color:white;
+
+    font-weight:600;
+
+    transition:0.3s;
+
+    background:
+    linear-gradient(
+        135deg,
+        #7c3aed,
+        #2563eb
+    );
+}
+
+.home-btn:hover{
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+    0 10px 25px rgba(
+        124,
+        58,
+        237,
+        0.25
+    );
 }
 
 /* ===================================

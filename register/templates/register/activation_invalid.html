@@ -16,6 +16,21 @@
 
     </p>
 
+    <form
+        method="POST"
+        action="{% url 'resend-activation-email' %}"
+    >
+
+        {% csrf_token %}
+
+        <button type="submit">
+
+            Reenviar email
+
+        </button>
+
+    </form>
+
 </section>
 
 {% endblock %}

@@ -622,6 +622,7 @@ a{
     filter: brightness(1.2);
     stroke: #000;
     stroke-width: 3;
+    border: 10px solid #000;
 }
 
 /* Asegura que visualmente se note qué es cliqueable */
@@ -631,4 +632,8 @@ a{
 }
 .sector-cliqueable:hover {
     opacity: 0.75;
+    filter: brightness(1.2);
+    stroke: #000;
+    stroke-width: 3;
+    border: 10px solid #000;
 }

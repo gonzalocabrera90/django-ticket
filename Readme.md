@@ -124,16 +124,10 @@ Este comando tardara un tiempo ya que dependiendo de los paises usados en CITIES
 
 ### 7. Cargar Datos de Prueba (Seeds / Fixtures)
 
-Para poblar la base de datos con lugares y sectores, shows musicales, teatros y categorías iniciales, corre los comandos de carga de datos:
+Para poblar la base de datos con lugares y sectores, shows musicales, teatros y categorías iniciales, corre el comando de carga de datos:
 
-Primero los lugares y sectores:
 ```bash
-python manage.py shell < seed-estadios.py
-
-```
-Y luego para los shows:
-```bash
-python manage.py shell < seed-shows.py
+python manage.py shell < seed-completo.py
 
 ```
 
