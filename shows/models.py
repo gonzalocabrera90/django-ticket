@@ -116,16 +116,27 @@ class ShowSector(models.Model):
 
     @property
     def available(self):
-        """Calcula las entradas disponibles en tiempo real sin guardarlas en la BD"""
-        return self.sector.capacity - (self.sold + self.reserved)
+        # 1. Contamos los asientos comprometidos en las órdenes de la app sales
+        asientos_reservados = self.orders.filter(
+            status__in=['PENDING', 'PAID']
+        ).aggregate(models.Sum('quantity'))['quantity__sum'] or 0
 
-    def save(self, *args, **kwargs):
-        # La validación se sigue sirviendo del cálculo en tiempo real
-        if self.available < 0:
-            raise ValidationError(
-                f"La suma de ventas y reservas supera la capacidad física de {self.sector.name} ({self.sector.capacity})."
-            )
-        super().save(*args, **kwargs)
+        # 2. Buscamos la capacidad en el modelo Sector vinculado
+        # Cambiá 'capacity' por el nombre real que tenga en ese modelo
+        return self.sector.capacity - asientos_reservados
+    # @property
+    # def available(self):
+    #     """Calcula las entradas disponibles en tiempo real sin guardarlas en la BD"""
+    #     return self.sector.capacity - (self.sold + self.reserved)
 
+    # def save(self, *args, **kwargs):
+    #     # La validación se sigue sirviendo del cálculo en tiempo real
+    #     if self.available < 0:
+    #         raise ValidationError(
+    #             f"La suma de ventas y reservas supera la capacidad física de {self.sector.name} ({self.sector.capacity})."
+    #         )
+    #     super().save(*args, **kwargs)
+        
     def __str__(self):
         return f"{self.show.event.title} ({self.show.date.strftime('%d/%m')}) - {self.sector.name} (${self.price})"
+
