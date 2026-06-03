@@ -135,3 +135,5 @@ CITIES_LIGHT_INCLUDE_COUNTRIES = ['AR']
 # agregar mas paises y ciudades a la base de datos en la migracion
 # CITIES_LIGHT_INCLUDE_COUNTRIES = ['AR','UY','CL','BR']
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Procesador de pagos activo (Fácil de cambiar en el futuro)
+PAYMENT_PROCESSOR = 'ticket.payment_processors.MockPaymentProcessor'

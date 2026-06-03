@@ -81,10 +81,23 @@ Detalle Show | EventLive
     <h3 id="info-nombre-sector" style="margin-top: 0;"></h3>
     <p><strong>Precio:</strong> $<span id="info-precio"></span></p>
     <p><strong>Disponibles:</strong> <span id="info-disponibles"></span> asientos</p>
-    <button id="btn-comprar"
+    <!-- <button id="btn-comprar"
         style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
         Seleccionar Entradas
-    </button>
+    </button> -->
+    <form action="{% url 'ticket:iniciar_pago' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="show_sector_id" id="btn-comprar">
+        
+        <div class="mb-3">
+            <label>Cantidad de entradas:</label>
+            <input type="number" name="quantity" value="1" min="1" max="6" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" >
+            🚀 Proceder al Pago
+        </button>
+    </form>
 </div>
 
 {% endblock %}
@@ -122,11 +135,11 @@ Detalle Show | EventLive
                             btnComprar.style.background = "#dc3545";
                             btnComprar.disabled = true;
                         } else {
-                            btnComprar.innerText = "Seleccionar Entradas";
-                            btnComprar.style.background = "#28a745";
+                            //btnComprar.innerText = "Seleccionar Entradas";
+                            //btnComprar.style.background = "#28a745";
                             btnComprar.disabled = false;
                             // Atamos el ID comercial al botón por si lo usás en el envío del formulario
-                            btnComprar.setAttribute('data-id-show-sector', showSectorId);
+                            btnComprar.setAttribute('value', showSectorId);
                         }
                     }
 
