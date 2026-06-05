@@ -11,12 +11,12 @@ from .views import (
 
 urlpatterns = [
     path(
-        'register/',
+        '',
         register_view,
         name='register'
     ),
     path(
-        'register/address/',
+        'address/',
         address_register_view,
         name='address-register'
     ),
@@ -36,12 +36,12 @@ urlpatterns = [
         name='activate'
     ),
     path(
-        'register/ajax/load-regions/',
+        'ajax/load-regions/',
         load_regions,
         name='ajax-load-regions'
     ),
     path(
-        'register/ajax/load-cities/',
+        'ajax/load-cities/',
         load_cities,
         name='ajax-load-cities'
     ),

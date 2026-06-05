@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cities_light',
     'main',
-    'home',
+    #'home',
     'login',
     'register',
     'shows',
@@ -130,10 +130,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static',]
+MEDIA_URL = '/media/'
+# Carpeta física en tu computadora donde se guardarán los archivos reales
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'register.User'
+LOGIN_URL = 'login'
 CITIES_LIGHT_INCLUDE_COUNTRIES = ['AR']
 # agregar mas paises y ciudades a la base de datos en la migracion
 # CITIES_LIGHT_INCLUDE_COUNTRIES = ['AR','UY','CL','BR']
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'notificaciones@ticketapp.com'
 # Procesador de pagos activo (Fácil de cambiar en el futuro)
 PAYMENT_PROCESSOR = 'ticket.payment_processors.MockPaymentProcessor'

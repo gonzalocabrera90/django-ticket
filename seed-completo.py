@@ -84,7 +84,7 @@ ESTADIOS_DATA = [
             {"name": "Campo VIP", "capacity": 12000, "geometry": {"type": "rect", "x": 421, "y": 508, "width": 169, "height": 89, "fill": "#7B708C"}}
         ],
         "layout_objects": [
-             {"name": "ESCENARIO PRINCIPAL", "type": "STAGE", "geometry": {"type": "rect", "x": 426, "y": 604, "width": 159, "height": 35, "fill": "#000000", "text_x": 504.756, "text_y": 625.144, "font-size": 15 }}
+             {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 426, "y": 604, "width": 159, "height": 35, "fill": "#000000", "text_x": 504.756, "text_y": 625.144, "font-size": 15 }}
         ]
     }
 ]

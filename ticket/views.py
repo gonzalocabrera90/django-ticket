@@ -11,7 +11,12 @@ from django.http import HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.urls import reverse
 
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+
 import uuid
+
+from .utils import enviar_correo_confirmacion
 
 
 @login_required
@@ -113,6 +118,15 @@ def payment_feedback_view(request):
                         show_sector=orden.show_sector  # <-- Agregamos esto para cumplir con tu modelo
                     )
                     tickets_creados.append(ticket)
+
+                    with transaction.atomic():
+                        # ... (guardado de orden y creación de tickets)
+                        pass
+                    
+                    # Fuera del bloque atómico pero dentro del if success, gatillamos el email
+                    enviar_correo_confirmacion(orden)
+                    
+                    mensaje = f"¡Pago aprobado con éxito! Tu orden #{orden.id} está confirmada. Se han generado {len(tickets_creados)} tickets y se envió un mail de confirmación."
             
             mensaje = f"¡Pago aprobado con éxito! Tu orden #{orden.id} está confirmada. Se han generado {len(tickets_creados)} tickets."
             clase_alerta = "success"
@@ -180,71 +194,64 @@ def iniciar_pago_view(request):
     # ¡Redirigimos al usuario a la pasarela!
     return redirect(link_de_pago)
 
-# def ticket_view(request):
-#     tickets = Ticket.objects.select_related('show').all().order_by('-purchase_date')
-    
-#     db_name = connection.settings_dict.get('NAME', 'N/A')
-#     db_user = connection.settings_dict.get('USER', 'N/A')
 
-#     # context = {
-#     #     'tickets': tickets,
-#     #     'url_name': 'Ticket (/ticket)',
-#     #     'current_url': '/ticket',
-#     #     'db_name': db_name,
-#     #     'db_user': db_user
-#     # }
-#     sectors = [
-#         {
-#             "name": "Campo VIP",
-#             "capacity": 100,
-#             "available": 100,
-#             "price": 25000,
-#             "x": 350,
-#             "y": 500,
-#             "width": 300,
-#             "height": 70,
-#             "color": "gold"
-#         },
-#         {
-#             "name": "Campo Frontal",
-#             "x": 250,
-#             "y": 380,
-#             "width": 500,
-#             "height": 100,
-#             "color": "royalblue"
-#         },
-#         {
-#             "name": "Campo Trasero",
-#             "x": 200,
-#             "y": 250,
-#             "width": 600,
-#             "height": 100,
-#             "color": "steelblue"
-#         },
-#         {
-#             "name": "Campo VIP",
-#             "x": 50,
-#             "y": 250,
-#             "width": 120,
-#             "height": 250,
-#             "color": "crimson"
-#        },
-#        {
-#             "name": "Campo VIP",
-#             "x": 830,
-#             "y": 250,
-#             "width": 120,
-#             "height": 250,
-#             "color": "crimson"
-#         },
-#         {
-#             "name": "Campo VIP",
-#             "x": 250,
-#             "y": 100,
-#             "width": 500,
-#             "height": 100,
-#             "color": "darkgreen"
-#             }
-#     ]
-#     context = {"sectors": sectors}
-#     return render(request, 'ticket/ticket.html', context)
+@csrf_exempt  # Desactivamos CSRF temporalmente para facilitar que aplicaciones externas le peguen al endpoint
+@require_POST
+def validar_ticket_api(request):
+    """
+    Endpoint de API para los molinetes del estadio.
+    Recibe el UUID del ticket, valida su estado y registra el ingreso.
+    """
+    import json
+    
+    try:
+        data = json.loads(request.body)
+        ticket_code = data.get('ticket_code')
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'JSON inválido.'}, status=400)
+        
+    if not ticket_code:
+        return JsonResponse({'status': 'error', 'message': 'Falta el código del ticket.'}, status=400)
+        
+    try:
+        # Buscamos el ticket por su UUID único
+        ticket = Ticket.objects.get(ticket_code=ticket_code)
+        
+        # Caso 1: El ticket ya fue escaneado antes (¡ALERTA DE FRAUDE!)
+        if ticket.is_used:
+            return JsonResponse({
+                'status': 'RECHAZADO',
+                'message': f'¡ALERTA! Este ticket ya ingresó el {ticket.used_at.strftime("%d/%m/%Y a las %H:%M")} hs.',
+                'evento': ticket.show_sector.show.event.title,
+                'sector': ticket.show_sector.sector.name
+            }, status=409) # Conflict
+            
+        # Caso 2: El ticket es válido y está listo para usar
+        ticket.is_used = True
+        ticket.used_at = timezone.now()
+        ticket.save()
+        
+        return JsonResponse({
+            'status': 'OK',
+            'message': '¡ACCESO CONCEDIDO! Bienvenido al estadio.',
+            'evento': ticket.show_sector.show.event.title,
+            'sector': ticket.show_sector.sector.name,
+            'comprador': ticket.order.user.username
+        }, status=200)
+        
+    except Ticket.DoesNotExist:
+        # Caso 3: El código es inventado o falso
+        return JsonResponse({
+            'status': 'RECHAZADO',
+            'message': 'ERROR: El ticket no existe en el sistema. Código falso.'
+        }, status=404)
+
+@login_required
+def my_tickets_view(request):
+    # Traemos solo las órdenes pagadas del usuario actual con sus tickets e información relacionada
+    ordenes = Order.objects.filter(
+        user=request.user, 
+        status='PAID'
+    ).select_related('show__event', 'show__place', 'show_sector__sector').prefetch_related('tickets').order_by('-id')
+    
+    return render(request, 'ticket/my-tickets.html', {'ordenes': ordenes})

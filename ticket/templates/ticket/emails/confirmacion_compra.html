@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;">
+    <div style="max-width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="background-color: #111111; color: #ffffff; padding: 20px; text-align: center;">
+            <h2>🎟️ TICKET-APP CONFIRMACIÓN</h2>
+        </div>
+        <div style="padding: 30px;">
+            <p>¡Hola <strong>{{ orden.user.first_name|default:orden.user.username }}</strong>!</p>
+            <p>Tu pago ha sido procesado con éxito. A continuación te presentamos el detalle de tus accesos para el evento:</p>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #007bff; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 10px 0;">{{ orden.show.event.title }}</h3>
+                <p style="margin: 5px 0;"><strong>Lugar:</strong> {{ orden.show.place.name }}</p>
+                <p style="margin: 5px 0;"><strong>Sector:</strong> {{ orden.show_sector.sector.name }}</p>
+                <p style="margin: 5px 0;"><strong>Cantidad:</strong> {{ orden.quantity }} entradas</p>
+            </div>
+
+            <h4 style="color: #333333;">Tus Códigos de Entrada:</h4>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #f2f2f2;">
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd;">Ubicación</th>
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd;">Código de Acceso (UUID)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">{{ orden.show_sector.sector.name }}</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd; font-family: monospace; color: #555;">{{ ticket.ticket_code }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p style="margin-top: 30px; font-size: 12px; color: #777777; text-align: center;">
+                Presentá estos códigos directamente en los molinetes del estadio el día del show. ¡Que lo disfrutes!
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -52,6 +52,8 @@ from django.contrib.auth.tokens import (
 from .decorators import (
     unauthenticated_user
 )
+from django.contrib import messages
+
 @unauthenticated_user
 def register_view(request):
 
@@ -159,6 +161,7 @@ def address_register_view(request):
         }
 
     )
+
 @unauthenticated_user
 def email_verification_sent(request):
     return render(
@@ -216,6 +219,8 @@ def activate_account_view(request, uidb64, token):
     if (user is not None and default_token_generator.check_token(user,token)):
         user.is_active = True
         user.save()
+        # MENSAJE DE ÉXITO EN EL LOGIN
+        messages.success(request, '¡Tu cuenta ha sido activada con éxito! Ya podés ingresar tus credenciales.')
         return redirect(
             'login'
         )

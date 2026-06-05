@@ -10,4 +10,6 @@ urlpatterns = [
     # Ruta de retorno (A donde vuelve el usuario después de pagar)
     path('checkout/feedback/', views.payment_feedback_view, name='payment_feedback'),
     path('orden/iniciar/', views.iniciar_pago_view, name='iniciar_pago'),
+    path('api/tickets/validar/', views.validar_ticket_api, name='api_validar_ticket'),
+    path('my-tickets/', views.my_tickets_view, name='my-tickets'),
 ]

@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import connection
 from .models import MainDashboard
 from shows.models import Show, Category, Event
 from register.models import User
 from ticket.models import Ticket
+from django.contrib.auth.decorators import login_required
 
 def index_view(request):
     dashboard = Event.objects.select_related('category').filter(
@@ -11,7 +12,7 @@ def index_view(request):
     ).distinct()[:4]
     all_dashboard = Event.objects.select_related('category').filter(
         shows__isnull=False
-    ).distinct()[:16]
+    ).distinct()[:8]
     categorias = Category.objects.all()
     if not dashboard:
         dashboard = MainDashboard(
@@ -40,3 +41,37 @@ def index_view(request):
         'db_user': db_user
     }
     return render(request, 'main/main.html', context)
+
+def cargar_mas_eventos_view(request):
+    offset = int(request.GET.get('offset', 0))
+    limite = 8  # Cuántos eventos traer en cada bloque extra
+    
+    # Query base idéntica a tu index_view
+    query_base = Event.objects.select_related('category').filter(shows__isnull=False).distinct()
+    
+    # Traemos el siguiente bloque usando el offset enviado por JS
+    siguientes_eventos = query_base[offset:offset + limite]
+    
+    # Contamos si quedan más eventos por cargar a futuro
+    quedan_mas = query_base.count() > (offset + limite)
+    
+    return render(request, 'partials/events_grid_items.html', {
+        'all_dashboard': siguientes_eventos,
+        'quedan_mas': quedan_mas
+    })
+
+@login_required
+def perfil_view(request):
+    # Traemos las direcciones del usuario usando el related_name='addresses'
+    direcciones = request.user.addresses.all().order_by('-is_default', '-created_at')
+    
+    context = {
+        'user': request.user,
+        'direcciones': direcciones
+    }
+    print(context['user'].img.url)
+    return render(request, 'main/perfil.html', context)
+
+def error_404_redirect_view(request, exception):
+    # Redirecciona directamente a la página de inicio
+    return redirect('index')  # O puedes usar '/' directamente

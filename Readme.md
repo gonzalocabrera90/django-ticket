@@ -149,4 +149,22 @@ python manage.py runserver
 
 Abre tu navegador web e ingresa a: `http://127.0.0.1:8000/`
 
+### Simulacion de reserva de entradas
+Para comprobar el funcionamiento del flujo de compra se implemento un archivo para simular reservas.
+Genera ordenes de compras vencidas. Se configura obteniendo informacion de la base de datos.
 
+```bash
+python manage.py shell < seed-reserva.py
+
+```
+
+Luego verificamos el conteo de entradas del sector para ver si disminuyo.
+Al iniciar un proceso de compra el sistema reserva entradas hasta concretarla.
+Si la compra falla necesitamos liberar esas entradas nuevamente para la venta.
+Para ello ejecutamos:
+
+```bash
+python manage.py liberar_reservas
+
+```
+Limpia las compras fallidas verificando el tiempo transcurrido desde la reserva.
