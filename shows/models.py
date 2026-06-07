@@ -139,4 +139,3 @@ class ShowSector(models.Model):
         
     def __str__(self):
         return f"{self.show.event.title} ({self.show.date.strftime('%d/%m')}) - {self.sector.name} (${self.price})"
-

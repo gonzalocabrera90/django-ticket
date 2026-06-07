@@ -220,8 +220,15 @@ def validar_ticket_api(request):
         
     try:
         # Buscamos el ticket por su UUID único
-        ticket = Ticket.objects.get(ticket_code=ticket_code)
-        
+        #ticket = Ticket.objects.get(ticket_code=ticket_code)
+
+        # Mejorames el .get. Buscamos el ticket y pre-cargamos de un solo golpe toda la cadena de relaciones
+        ticket = Ticket.objects.select_related(
+            'show_sector__show__event',  # Junta Ticket -> ShowSector -> Show -> Event
+            'show_sector__sector',      # Junta Ticket -> ShowSector -> Sector (para el nombre del sector)
+            'order__user'               # Junta Ticket -> Order -> User (para el nombre del comprador)
+        ).get(ticket_code=ticket_code)
+                
         # Caso 1: El ticket ya fue escaneado antes (¡ALERTA DE FRAUDE!)
         if ticket.is_used:
             return JsonResponse({
@@ -241,7 +248,7 @@ def validar_ticket_api(request):
             'message': '¡ACCESO CONCEDIDO! Bienvenido al estadio.',
             'evento': ticket.show_sector.show.event.title,
             'sector': ticket.show_sector.sector.name,
-            'comprador': ticket.order.user.username
+            'comprador': ticket.order.user.get_full_name() or ticket.order.user.username
         }, status=200)
         
     except Ticket.DoesNotExist:
@@ -250,6 +257,10 @@ def validar_ticket_api(request):
             'status': 'RECHAZADO',
             'message': 'ERROR: El ticket no existe en el sistema. Código falso.'
         }, status=404)
+
+def panel_control_accesos_view(request):
+    """Muestra la interfaz web interactiva para simular el escáner del staff"""
+    return render(request, 'ticket/scanner_simulador.html')
 
 @login_required(login_url='login') # <-- Protegemos la vista
 def my_tickets_view(request):
