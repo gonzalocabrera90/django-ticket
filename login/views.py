@@ -34,8 +34,9 @@ import json
 import random
 from django.contrib.auth import authenticate
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.core.mail import EmailMessage
+from django.utils import timezone
+from datetime import timedelta
+
 
 @unauthenticated_user
 def login_view(request):
@@ -125,6 +126,8 @@ def resend_activation_email_view(request):
     )
 
     if not user_id:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'redirect_url': '/login/'})
         return redirect('login')
 
     user = User.objects.get(
@@ -135,6 +138,11 @@ def resend_activation_email_view(request):
         request,
         user
     )
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': 'Te reenviamos el email de activación. Revisá tu casilla de correo.'
+        })
 
     messages.success(
         request,
@@ -144,51 +152,107 @@ def resend_activation_email_view(request):
         'account-not-verified'
     )
 
+
 @unauthenticated_user
 def verify_login_code_view(request):
-    user_id = request.session.get(
-        'login_user_id'
-    )
+    user_id = request.session.get('login_user_id')
 
     if not user_id:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'redirect_url': '/login/'})
         return redirect('login')
 
-    user = User.objects.get(
-        id=user_id
-    )
+    user = User.objects.get(id=user_id)
 
     if request.method == 'POST':
-        code = request.POST.get(
-            'code'
-        )
-        login_code = LoginCode.objects.filter(
-            user=user,
-            code=code
-        ).first()
+        # Detectamos si viene por JavaScript (Asíncrono)
+        is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
+        if is_ajax:
+            data = json.loads(request.body)
+            code = data.get('code')
+        else:
+            code = request.POST.get('code')
+
+        # Buscamos el código en la base de datos
+        login_code = LoginCode.objects.filter(user=user, code=code).first()
 
         if login_code:
-            login_code.delete()
-            request.session.pop(
-                'login_user_id',
-                None
-            )
-            login(request, user)
-            return redirect('/')
+            ahora = timezone.now()
+            tiempo_limite = login_code.created_at + timedelta(minutes=5)
 
+            if ahora <= tiempo_limite:
+                # ... tu lógica de éxito se mantiene igual ...
+                login_code.delete()
+                request.session.pop('login_user_id', None)
+                login(request, user)
+                if is_ajax:
+                    return JsonResponse({'success': True, 'redirect_url': '/'})
+                return redirect('/')
+            else:
+                # CÓDIGO EXPIRADO: Agregamos la razón del fallo en el JSON
+                if is_ajax:
+                    return JsonResponse({
+                        'success': False, 
+                        'reason': 'expired', # <-- CLAVE PARA JAVASCRIPT
+                        'message': 'El código ha expirado. Por seguridad, por favor volvé a iniciar sesión.'
+                    })
+                return render(request, 'login/verify_login.html', {'error': 'El código ha expirado...'})
+        
         else:
-            return render(
-                request,
-                'login/verify_login.html',
-                {
-                    'error':
-                    'Código inválido'
-                }
-            )
+            # CÓDIGO INCORRECTO (Mal tipeado)
+            if is_ajax:
+                return JsonResponse({
+                    'success': False, 
+                    'reason': 'invalid', # <-- CLAVE PARA JAVASCRIPT
+                    'message': 'Código inválido. Verificá los números.'
+                })
+            return render(request, 'login/verify_login.html', {'error': 'Código inválido'})
+    return render(request, 'login/verify_login.html')
+# def verify_login_code_view(request):
+#     user_id = request.session.get(
+#         'login_user_id'
+#     )
 
-    return render(
-        request,
-        'login/verify_login.html'
-    )
+#     if not user_id:
+#         return redirect('login')
+
+#     user = User.objects.get(
+#         id=user_id
+#     )
+
+#     if request.method == 'POST':
+#         code = request.POST.get(
+#             'code'
+#         )
+#         login_code = LoginCode.objects.filter(
+#             user=user,
+#             code=code
+#         ).first()
+
+#         if login_code:
+#             login_code.delete()
+#             request.session.pop(
+#                 'login_user_id',
+#                 None
+#             )
+#             login(request, user)
+#             return redirect('/')
+
+#         else:
+#             return render(
+#                 request,
+#                 'login/verify_login.html',
+#                 {
+#                     'error':
+#                     'Código inválido'
+#                 }
+#             )
+
+#     return render(
+#         request,
+#         'login/verify_login.html'
+#     )
 
 @require_POST
 def logout_view(request):

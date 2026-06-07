@@ -37,7 +37,7 @@
             <hr>
             <p class="mb-0">Estado actual de la orden en Base de Datos: <strong>{{ orden.status }}</strong></p>
         </div>
-
+<!-- 
         {% if orden.status == 'PAID' %}
             <div class="card shadow mt-4">
                 <div class="card-header bg-primary text-white">
@@ -56,6 +56,33 @@
                     {% endfor %}
                 </ul>
             </div>
+        {% endif %} -->
+        {% if orden.status == 'PAID' and orden.tickets.all %}
+        <div class="row mt-4 text-start">
+            <h4 class="mb-3 text-center">🎟️ Tus Entradas Digitales</h4>
+            
+            {% for ticket in orden.tickets.all %}
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 border-success shadow-sm">
+                        <div class="card-header bg-success text-white text-center font-weight-bold">
+                            Entrada #{{ forloop.counter }} - {{ ticket.show_sector.sector.name }}
+                        </div>
+                        <div class="card-body text-center d-flex flex-column align-items-center justify-content-center">
+                            
+                            <img src="{{ ticket.get_qr_base64 }}" alt="Código QR de Acceso" class="img-fluid my-2" style="max-width: 160px; border: 1px solid #ddd; padding: 5px; background: white;">
+                            
+                            <p class="card-text text-muted small mt-2 mb-0">
+                                <strong>Código único de acceso:</strong><br>
+                                <code class="text-dark">{{ ticket.ticket_code }}</code>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-light text-center">
+                            <small class="text-muted">Presentá este QR en la entrada del evento.</small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
         {% endif %}
 
         <div class="text-center mt-4">

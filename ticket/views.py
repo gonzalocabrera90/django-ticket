@@ -18,7 +18,6 @@ import uuid
 
 from .utils import enviar_correo_confirmacion
 
-
 @login_required
 def iniciar_reserva(request):
     if request.method == "POST":
@@ -119,19 +118,25 @@ def payment_feedback_view(request):
                     )
                     tickets_creados.append(ticket)
 
-                    with transaction.atomic():
-                        # ... (guardado de orden y creación de tickets)
-                        pass
+                    # with transaction.atomic():
+                    #     # ... (guardado de orden y creación de tickets)
+                    #     pass
                     
                     # Fuera del bloque atómico pero dentro del if success, gatillamos el email
-                    enviar_correo_confirmacion(orden)
-                    
-                    mensaje = f"¡Pago aprobado con éxito! Tu orden #{orden.id} está confirmada. Se han generado {len(tickets_creados)} tickets y se envió un mail de confirmación."
-            
-            mensaje = f"¡Pago aprobado con éxito! Tu orden #{orden.id} está confirmada. Se han generado {len(tickets_creados)} tickets."
+            print("Gatillando función de email...") # Meté este print de control
+            enviar_correo_confirmacion(orden)
+            print("¡Función de email ejecutada con éxito!")        
+            mensaje = f"¡Pago aprobado con éxito! Tu orden #{orden.id} está confirmada. Se han generado {len(tickets_creados)} tickets y se envió un mail de confirmación."
             clase_alerta = "success"
             
         except Exception as e:
+            # IMPRESCINDIBLE: Esto nos va a decir en la consola qué está fallando por dentro
+            print("\n❌ ❌ ❌ ¡¡¡EL PROCESO DE EMAIL ACABA DE FALLAR!!! ❌ ❌ ❌")
+            print(f"Error real detectado: {str(e)}")
+            import traceback
+            traceback.print_exc() # Esto te pinta el número de línea exacto del error
+            print("❌ ❌ ❌ ------------------------------------------- ❌ ❌ ❌\n")
+            
             mensaje = f"El pago fue aprobado, pero ocurrió un error al generar tus tickets: {str(e)}. Por favor, contacta a soporte."
             clase_alerta = "warning"
     else:
@@ -246,12 +251,16 @@ def validar_ticket_api(request):
             'message': 'ERROR: El ticket no existe en el sistema. Código falso.'
         }, status=404)
 
-@login_required
+@login_required(login_url='login') # <-- Protegemos la vista
 def my_tickets_view(request):
-    # Traemos solo las órdenes pagadas del usuario actual con sus tickets e información relacionada
+    # Tu query excelente se mantiene idéntica
     ordenes = Order.objects.filter(
         user=request.user, 
         status='PAID'
-    ).select_related('show__event', 'show__place', 'show_sector__sector').prefetch_related('tickets').order_by('-id')
+    ).select_related(
+        'show__event', 
+        'show__place', 
+        'show_sector__sector'
+    ).prefetch_related('tickets').order_by('-id')
     
     return render(request, 'ticket/my-tickets.html', {'ordenes': ordenes})

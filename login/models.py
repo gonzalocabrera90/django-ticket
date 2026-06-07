@@ -21,6 +21,16 @@ class LoginCode(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True
     )
+
+    # ESTO APORTA LA OPTIMIZACIÓN A POSTGRESQL
+    class Meta:
+        # 1. Creamos un índice compuesto para optimizar la verificación de código
+        indexes = [
+            models.Index(fields=['user', 'code'], name='login_user_code_idx'),
+        ]
+        # 2. Ordenamos la tabla para que los códigos más nuevos se lean primero por defecto
+        ordering = ['-created_at']
+    
     def __str__(self):
 
         return f"{self.user.email} - {self.code}"
