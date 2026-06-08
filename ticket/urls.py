@@ -14,4 +14,5 @@ urlpatterns = [
     path('my-tickets/', views.my_tickets_view, name='my-tickets'),
     path('control-accesos/panel/', views.panel_control_accesos_view, name='panel_control_accesos'),
     path('control-accesos/api/validar/', views.validar_ticket_api, name='validar_ticket_api'),
+    path('dashboard/organizador/', views.dashboard_organizador, name='dashboard_organizador'),
 ]

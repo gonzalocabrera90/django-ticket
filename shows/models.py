@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.core.exceptions import ValidationError
 
 # ==========================================
@@ -83,6 +84,16 @@ class Event(models.Model):
     description = models.TextField(verbose_name="Descripción del Evento")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name="events")
     image_url = models.URLField(blank=True, null=True, verbose_name="URL de la Imagen")
+
+    # NUEVO CAMPO: El dueño corporativo de este evento
+    organizador = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # <-- Esto resuelve el Error E301
+        on_delete=models.PROTECT, 
+        related_name="eventos_creados", 
+        null=True, 
+        blank=True,
+        verbose_name="Organizador / Productora"
+    )
 
     def __str__(self):
         return self.title

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db import connection
 from .models import Ticket, Order
 from .payment_processors import get_payment_processor
-from shows.models import ShowSector
+from shows.models import ShowSector, Show
 
 from django.db import transaction
 from django.http import JsonResponse
@@ -18,32 +18,50 @@ import uuid
 
 from .utils import enviar_correo_confirmacion
 
+from django.db.models import Sum
+
 @login_required
 def iniciar_reserva(request):
     if request.method == "POST":
-        # 1. Obtenemos los datos que envía el mapa interactivo
         sector_id = request.POST.get('show_sector_id')
-        cantidad = int(request.POST.get('quantity', 1))
         
-        # 2. Abrimos un bloque atómico seguro para congelar la fila de la BD
         try:
+            cantidad = int(request.POST.get('quantity', 1))
+        except (ValueError, TypeError):
+            return JsonResponse({'status': 'error', 'message': 'Cantidad inválida.'}, status=400)
+        
+        # Regla de negocio: Límite estricto de 6 entradas por operación
+        if cantidad > 6:
+            return JsonResponse({
+                'status': 'error', 
+                'message': 'No podés adquirir más de 6 entradas por operación.'
+            }, status=400)
+            
+        if cantidad < 1:
+            return JsonResponse({
+                'status': 'error', 
+                'message': 'La cantidad mínima es 1 entrada.'
+            }, status=400)
+        
+        try:
+            # Abrimos el bloque atómico seguro
             with transaction.atomic():
-                # select_for_update() bloquea este ShowSector específico en la BD 
-                # hasta que termine esta función. Nadie más puede leer/modificar sus asientos.
+                # select_for_update() bloquea la fila del ShowSector para que nadie altere las órdenes en paralelo
                 show_sector = ShowSector.objects.select_for_update().get(id=sector_id)
                 
-                # 3. Validamos stock disponible
+                # Validamos el stock disponible usando tu propiedad dinámica
                 if show_sector.available < cantidad:
-                    return JsonResponse({'status': 'error', 'message': 'Ya no quedan asientos suficientes en este sector.'}, status=400)
+                    return JsonResponse({
+                        'status': 'error', 
+                        'message': f'Ya no quedan asientos suficientes. Disponibles: {show_sector.available}'
+                    }, status=400)
                 
-                # 4. Restamos temporalmente el inventario
-                show_sector.available -= cantidad
-                show_sector.save()
-                
-                # 5. Calculamos el total monetario
+                # Calculamos el total monetario
                 total = show_sector.price * cantidad
                 
-                # 6. Creamos la orden en modo PENDING
+                # Creamos la orden en modo PENDING. 
+                # AL HACER ESTO, el método @property 'available' del sector leerá esta orden 
+                # en la próxima consulta y el stock se considerará "restado" automáticamente.
                 nueva_orden = Order.objects.create(
                     user=request.user,
                     show=show_sector.show,
@@ -53,7 +71,7 @@ def iniciar_reserva(request):
                     status='PENDING'
                 )
                 
-            # Al salir del bloque transaction.atomic(), Django libera el bloqueo en la BD
+            # Al salir del bloque transaction.atomic(), Django libera el bloqueo en PostgreSQL
             return JsonResponse({
                 'status': 'success',
                 'message': 'Reserva temporal exitosa. Tienes 10 minutos para pagar.',
@@ -64,6 +82,53 @@ def iniciar_reserva(request):
             return JsonResponse({'status': 'error', 'message': 'Sector no encontrado.'}, status=404)
             
     return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
+
+# @login_required
+# def iniciar_reserva(request):
+#     if request.method == "POST":
+#         # 1. Obtenemos los datos que envía el mapa interactivo
+#         sector_id = request.POST.get('show_sector_id')
+#         cantidad = int(request.POST.get('quantity', 1))
+        
+#         # 2. Abrimos un bloque atómico seguro para congelar la fila de la BD
+#         try:
+#             with transaction.atomic():
+#                 # select_for_update() bloquea este ShowSector específico en la BD 
+#                 # hasta que termine esta función. Nadie más puede leer/modificar sus asientos.
+#                 show_sector = ShowSector.objects.select_for_update().get(id=sector_id)
+                
+#                 # 3. Validamos stock disponible
+#                 if show_sector.available < cantidad:
+#                     return JsonResponse({'status': 'error', 'message': 'Ya no quedan asientos suficientes en este sector.'}, status=400)
+                
+#                 # 4. Restamos temporalmente el inventario
+#                 show_sector.available -= cantidad
+#                 show_sector.save()
+                
+#                 # 5. Calculamos el total monetario
+#                 total = show_sector.price * cantidad
+                
+#                 # 6. Creamos la orden en modo PENDING
+#                 nueva_orden = Order.objects.create(
+#                     user=request.user,
+#                     show=show_sector.show,
+#                     show_sector=show_sector,
+#                     quantity=cantidad,
+#                     total_price=total,
+#                     status='PENDING'
+#                 )
+                
+#             # Al salir del bloque transaction.atomic(), Django libera el bloqueo en la BD
+#             return JsonResponse({
+#                 'status': 'success',
+#                 'message': 'Reserva temporal exitosa. Tienes 10 minutos para pagar.',
+#                 'order_id': nueva_orden.id
+#             })
+            
+#         except ShowSector.DoesNotExist:
+#             return JsonResponse({'status': 'error', 'message': 'Sector no encontrado.'}, status=404)
+            
+#     return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
 
 def mock_checkout_view(request, order_id):
     """Muestra la pantalla simulada de la pasarela de pagos"""
@@ -275,3 +340,60 @@ def my_tickets_view(request):
     ).prefetch_related('tickets').order_by('-id')
     
     return render(request, 'ticket/my-tickets.html', {'ordenes': ordenes})
+
+# dashboard para que el organizador revise los datos del Evento
+@login_required
+def dashboard_organizador(request):
+    # Seguridad Enterprise: Solo permitimos el acceso si el usuario es Staff/Organizador
+    if not request.user.is_staff:
+        return redirect('index') # O la URL de tu home pública
+    
+
+    # 1. Traemos los shows que le pertenecen a este organizador logueado
+    # Buscamos shows cuyo EVENTO tenga como organizador al usuario actual
+    shows = Show.objects.filter(event__organizador=request.user).select_related('event', 'place')
+    
+    # 2. Construimos el paquete de métricas para el template
+    panel_datos = []
+    
+    total_recaudado_global = 0
+    total_tickets_global = 0
+
+    for show in shows:
+        # Sumamos las cantidades y dinero de órdenes aprobadas (PAID) para este show específico
+        metricas_ventas = Order.objects.filter(show=show, status='PAID').aggregate(
+            total_dinero=Sum('total_price'),
+            total_entradas=Sum('quantity')
+        )
+        
+        recaudado = metricas_ventas['total_dinero'] or 0
+        entradas_vendidas = metricas_ventas['total_entradas'] or 0
+        
+        # Calculamos la capacidad total sumando todos los sectores físicos del estadio asignado
+        capacidad_estadio = show.place.sectors.aggregate(Sum('capacity'))['capacity__sum'] or 0
+        
+        # Porcentaje de ocupación para la barra de progreso
+        porcentaje_ocupacion = 0
+        if capacidad_estadio > 0:
+            porcentaje_ocupacion = int((entradas_vendidas / capacidad_estadio) * 100)
+            
+        # Acumuladores globales para las tarjetas de arriba
+        total_recaudado_global += recaudado
+        total_tickets_global += entradas_vendidas
+        
+        panel_datos.append({
+            'show': show,
+            'recaudado': recaudado,
+            'vendidas': entradas_vendidas,
+            'capacidad': capacidad_estadio,
+            'ocupacion_porcentaje': porcentaje_ocupacion
+        })
+        
+    context = {
+        'panel_datos': panel_datos,
+        'total_recaudado_global': total_recaudado_global,
+        'total_tickets_global': total_tickets_global,
+        'cantidad_shows': shows.count()
+    }
+    
+    return render(request, 'ticket/dashboard_organizador.html', context)

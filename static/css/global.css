@@ -101,7 +101,9 @@
 
     box-shadow:0 8px 20px rgba(123,97,255,0.15);
 }
-
+ a {
+    text-decoration: none;
+ }
 /* REGISTER ACTIVO */
 
 .nav-link-register{

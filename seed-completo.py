@@ -265,12 +265,19 @@ class Command(BaseCommand):
                     vendidas = int(sector.capacity * porcentaje_ocupacion)
                     reservadas = random.randint(10, min(100, sector.capacity - vendidas))
 
+                    # ShowSector.objects.create(
+                    #     show=show,
+                    #     sector=sector,
+                    #     price=tarifa,
+                    #     sold=vendidas,
+                    #     reserved=reservadas
+                    # )
                     ShowSector.objects.create(
                         show=show,
                         sector=sector,
                         price=tarifa,
-                        sold=vendidas,
-                        reserved=reservadas
+                        sold=0,
+                        reserved=0
                     )
 
         self.stdout.write(self.style.SUCCESS(f'=== ¡Éxito total! Se cargaron los 31 Eventos con sus respectivos ShowSectors en cascada V3. ==='))
