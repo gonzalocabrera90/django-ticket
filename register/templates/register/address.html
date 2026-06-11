@@ -2,23 +2,19 @@
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dirección | EventLive</title>
 
     <!-- GOOGLE FONTS -->
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{% static 'register/css/address.css' %}">
 
 </head>
@@ -30,11 +26,8 @@
     ====================================== -->
 
     <div class="background-glow">
-
         <div class="glow glow-1"></div>
-
         <div class="glow glow-2"></div>
-
     </div>
 
     <!-- =====================================
@@ -42,19 +35,12 @@
     ====================================== -->
 
     <nav class="navbar">
-
         <a href="/" class="logo">
-
             EVENT<span>LIVE</span>
-
         </a>
-
         <div class="step-badge">
-
             Paso 2 de 2
-
         </div>
-
     </nav>
 
     <!-- =====================================
@@ -62,229 +48,130 @@
     ====================================== -->
 
     <section class="address-wrapper">
-
         <div class="address-container">
-
             <!-- LEFT -->
-
             <div class="address-left">
-
                 <div class="left-content">
-
                     <h1>
                         Completá tu dirección.
                     </h1>
-
                     <p>
-
                         Necesitamos algunos datos
                         adicionales para finalizar
                         tu perfil y mejorar
                         tu experiencia.
-
                     </p>
-
                     <div class="feature-box">
-
                         <h3>
                             📍 Información segura
                         </h3>
-
                         <p>
-
                             Tus datos son almacenados
                             de forma segura y solo
                             serán utilizados para
                             funcionalidades del sistema.
-
                         </p>
-
                     </div>
-
                 </div>
-
             </div>
-
             <!-- RIGHT -->
-
             <div class="address-right">
-
                 <div class="form-container">
-
                     <h2 class="form-title">
                         Dirección
                     </h2>
-
                     <p class="form-subtitle">
-
                         Ingresá los datos de tu domicilio.
-
                     </p>
-
                     <form method="POST">
-
                         {% csrf_token %}
-
                         <div class="form-grid">
-
                             <!-- COUNTRY -->
-
                             <div class="input-group full">
-
                                 <label>
                                     País
                                 </label>
-
-                                <select
-                                    id="countrySelect"
-                                >
-
+                                <select id="countrySelect">
                                     <option value="">
                                         Seleccionar país
                                     </option>
-
                                     {% for country in countries %}
-
-                                        <option
-                                            value="{{ country.id }}"
-                                        >
-                                            {{ country.name }}
-                                        </option>
-
+                                    <option value="{{ country.id }}">
+                                        {{ country.name }}
+                                    </option>
                                     {% endfor %}
-
                                 </select>
-
                             </div>
-
                             <!-- PROVINCE -->
-
                             <div class="input-group">
-
                                 <label>
                                     Provincia / Estado
                                 </label>
-
-                                <select
-                                    id="provinceSelect"
-                                >
-
+                                <select id="provinceSelect">
                                     <option value="">
                                         Seleccionar provincia
                                     </option>
-
                                 </select>
-
                             </div>
-
                             <!-- CITY -->
-
                             <div class="input-group">
-
                                 <label>
                                     Ciudad
                                 </label>
-
-                                <select
-                                    name="city"
-                                    id="citySelect"
-                                >
-
+                                <select name="city" id="citySelect">
                                     <option value="">
                                         Seleccionar ciudad
                                     </option>
-
                                 </select>
-
                             </div>
-
                             <!-- STREET -->
-
                             <div class="input-group full">
-
                                 <label>
                                     Calle
                                 </label>
-
                                 {{ form.street }}
-
                             </div>
-
                             <!-- NUMBER -->
-
                             <div class="input-group">
-
                                 <label>
                                     Número
                                 </label>
-
                                 {{ form.street_number }}
-
                             </div>
-
                             <!-- FLOOR -->
-
                             <div class="input-group">
-
                                 <label>
                                     Piso
                                 </label>
-
                                 {{ form.floor }}
-
                             </div>
-
                             <!-- APARTMENT -->
-
                             <div class="input-group">
-
                                 <label>
                                     Departamento
                                 </label>
-
                                 {{ form.apartment }}
-
                             </div>
-
                             <!-- POSTAL -->
-
                             <div class="input-group">
-
                                 <label>
                                     Código postal
                                 </label>
-
                                 {{ form.postal_code }}
-
                             </div>
-
                         </div>
-
-                        <button
-                            type="submit"
-                            class="btn-submit"
-                        >
+                        <button type="submit" class="btn-submit">
                             Finalizar registro
                         </button>
-
                     </form>
-
                     <div class="back-link">
-
                         <a href="{% url 'register' %}">
-
                             ← Volver al registro
-
                         </a>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
     <!-- =====================================
@@ -292,7 +179,6 @@
     ====================================== -->
 
     <script>
-
         const countrySelect =
             document.getElementById(
                 "countrySelect"
@@ -314,11 +200,9 @@
 
         countrySelect.addEventListener(
             "change",
-            function(){
-
+            function () {
                 const countryId =
                     this.value;
-
                 provinceSelect.innerHTML =
                     `
                         <option value="">
@@ -336,32 +220,22 @@
                 fetch(
                     `/register/ajax/load-regions/?country=${countryId}`
                 )
-
-                .then(response => response.json())
-
-                .then(data => {
-
-                    provinceSelect.innerHTML =
-                        `
+                    .then(response => response.json())
+                    .then(data => {
+                        provinceSelect.innerHTML =
+                            `
                             <option value="">
                                 Seleccionar provincia
                             </option>
                         `;
-
-                    data.forEach(province => {
-
-                        provinceSelect.innerHTML += `
-
+                        data.forEach(province => {
+                            provinceSelect.innerHTML += `
                             <option value="${province.id}">
                                 ${province.name}
                             </option>
-
                         `;
-
+                        });
                     });
-
-                });
-
             }
         );
 
@@ -371,8 +245,7 @@
 
         provinceSelect.addEventListener(
             "change",
-            function(){
-
+            function () {
                 const provinceId =
                     this.value;
 
@@ -386,36 +259,28 @@
                 fetch(
                     `/register/ajax/load-cities/?region=${provinceId}`
                 )
-
-                .then(response => response.json())
-
-                .then(data => {
-
-                    citySelect.innerHTML =
-                        `
+                    .then(response => response.json())
+                    .then(data => {
+                        citySelect.innerHTML =
+                            `
                             <option value="">
                                 Seleccionar ciudad
                             </option>
                         `;
 
-                    data.forEach(city => {
+                        data.forEach(city => {
 
-                        citySelect.innerHTML += `
+                            citySelect.innerHTML += `
 
                             <option value="${city.id}">
                                 ${city.name}
                             </option>
 
                         `;
-
+                        });
                     });
-
-                });
-
             }
         );
-
     </script>
-
 </body>
 </html>

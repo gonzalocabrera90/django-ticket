@@ -92,6 +92,10 @@ class Address(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True
     )
+    class Meta:
+        verbose_name = "Dirección"
+        verbose_name_plural = "📍 Direcciones de Envío"
+    
     def __str__(self):
 
         return f'{self.label} - {self.user.email}'

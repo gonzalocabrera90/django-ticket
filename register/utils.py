@@ -16,47 +16,28 @@ from django.contrib.auth.tokens import (
     default_token_generator
 )
 
-def send_activation_email(
-    request,
-    user
-):
-
+def send_activation_email(request, user):
     uid = urlsafe_base64_encode(
         force_bytes(user.pk)
     )
-
     token = default_token_generator.make_token(
         user
     )
-
     activation_link = request.build_absolute_uri(
-
         reverse(
-
             'activate-account',
-
             kwargs={
-
                 'uidb64': uid,
-
                 'token': token
-
             }
-
         )
-
     )
 
     html_content = render_to_string(
-
         'register/activation_email.html',
-
         {
-
             'user': user,
-
             'activation_link': activation_link
-
         }
 
     )

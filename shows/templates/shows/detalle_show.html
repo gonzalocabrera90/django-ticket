@@ -81,10 +81,6 @@ Detalle Show | EventLive
     <h3 id="info-nombre-sector" style="margin-top: 0;"></h3>
     <p><strong>Precio:</strong> $<span id="info-precio"></span></p>
     <p><strong>Disponibles:</strong> <span id="info-disponibles"></span> asientos</p>
-    <!-- <button id="btn-comprar"
-        style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
-        Seleccionar Entradas
-    </button> -->
     <form action="{% url 'ticket:iniciar_pago' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="show_sector_id" id="btn-comprar">

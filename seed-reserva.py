@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 
+# Procedimiento para crear tickets en estado pendiente y con un tiempo
+# mayor al permitido para ejecutar la compra.
+
 # 1. Traemos al usuario y al sector VIP de Coldplay
 User = get_user_model()
 usuario = User.objects.first()

@@ -56,23 +56,12 @@ from django.contrib import messages
 
 @unauthenticated_user
 def register_view(request):
-
     if request.method == 'POST':
-
         form = RegisterForm(
             request.POST,
             request.FILES
         )
-
         if form.is_valid():
-            # user = form.save()
-            # # LOGIN AUTOMATICO
-            # login(request, user)
-            # return redirect(
-            #     'address-register'
-            # )
-
-            # # confirmar email
             user = form.save(commit=False)
             user.is_active = False
             user.save()
@@ -82,7 +71,6 @@ def register_view(request):
             return redirect('address-register')
 
     else:
-
         form = RegisterForm()
 
     return render(
@@ -95,13 +83,10 @@ def register_view(request):
 
 @unauthenticated_user
 def address_register_view(request):
-
     user_id = request.session.get(
         'pending_user_id'
     )
-
     if not user_id:
-
         return redirect('register')
 
     user = User.objects.get(
@@ -111,31 +96,21 @@ def address_register_view(request):
     countries = Country.objects.all()
 
     if request.method == 'POST':
-
         form = AddressForm(
             request.POST
         )
-
         if form.is_valid():
-
             address = form.save(
                 commit=False
             )
-
             address.user = user
-
             if not user.addresses.exists():
-
                 address.is_default = True
 
             address.save()
-
             send_activation_email(
-
                 request,
-
                 user
-
             )
 
             return redirect(
@@ -143,23 +118,15 @@ def address_register_view(request):
             )
 
     else:
-
         form = AddressForm()
 
     return render(
-
         request,
-
         'register/address.html',
-
         {
-
             'form': form,
-
             'countries': countries,
-
         }
-
     )
 
 @unauthenticated_user
@@ -197,7 +164,6 @@ def activate(request, uidb64, token):
         )
 
 def activate_account_view(request, uidb64, token):
-
     try:
         uid = force_str(
             urlsafe_base64_decode(
@@ -226,35 +192,26 @@ def activate_account_view(request, uidb64, token):
         )
 
     else:
-
         return render(
             request,
-
             'register/activation_invalid.html'
-
         )
 
-
 def load_regions(request):
-
     country_id = request.GET.get('country')
-
     regions = Region.objects.filter(
         country_id=country_id
     ).values(
         'id',
         'name'
     )
-
     return JsonResponse(
         list(regions),
         safe=False
     )
 
 def load_cities(request):
-
     region_id = request.GET.get('region')
-
     cities = City.objects.filter(
         region_id=region_id
     ).values(

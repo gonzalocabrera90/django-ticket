@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.utils.text import slugify
 from shows.models import ShowPlace, Address, Sector, MapLayoutObject, Category, Event, Show, ShowSector
 
+# Procedimiento para poblar la base de datos con la informacion necesaria para las prubas de la UI.
+
 # INFRAESTRUCTURA SUMINISTRADA ANTERIORMENTE
 ESTADIOS_DATA = [
     {
@@ -86,6 +88,101 @@ ESTADIOS_DATA = [
         "layout_objects": [
              {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 426, "y": 604, "width": 159, "height": 35, "fill": "#000000", "text_x": 504.756, "text_y": 625.144, "font-size": 15 }}
         ]
+    },
+    {
+        "name": "Campo Argentino de Polo",
+        "capacity": 45000,
+        "viewbox": "0 0 1000 1000",
+        "address": {"street": "Intersección de Avenida del Libertado y Dorrego", "city": "Buenos Aires, Palermo", "state": "Buenos Aires", "zip_code": "B7600"},
+        "sectors": [
+            {"name": "VIP Oro Izquierdo", "capacity": 900, "geometry": {"x": 143, "y": 594, "fill": "#D59F28", "type": "rect", "width": 255, "height": 36}},
+            {"name": "VIP Oro Derecho", "capacity": 1000, "geometry": {"x": 601, "y": 594, "fill": "#D59F28", "type": "rect", "width": 256, "height": 36}},
+            {"name": "VIP Derecho", "capacity": 10000, "geometry": {"x": 537, "y": 528, "fill": "#FFD3A1", "type": "rect", "width": 320, "height": 55}},
+            {"name": "VIP Izquierdo", "capacity": 7300, "geometry": {"x": 142, "y": 526, "fill": "#FFD3A1", "type": "rect", "width": 320, "height": 55}},
+
+            {"name": "Campo de Pie", "capacity": 7300, "geometry": {"x": 143, "y": 352, "fill": "#D3D3D3", "type": "rect", "width": 714, "height": 165}},
+            {"name": "Platea A", "capacity": 900, "geometry": {"x": 142, "y": 255, "fill": "#76EAFF", "type": "rect", "width": 215, "height": 75}},
+            {"name": "Platea B", "capacity": 9000, "geometry": {"x": 374, "y": 255, "fill": "#76EAFF", "type": "rect", "width": 252, "height": 75}},
+            {"name": "Platea C", "capacity": 900, "geometry": {"x": 642, "y": 255, "fill": "#76EAFF", "type": "rect", "width": 215, "height": 75}},
+
+            {"name": "Platea Preferencial Derecha", "capacity": 7300, "geometry": {"x": 882, "y": 352, "fill": "#356BCF", "type": "rect", "width": 89, "height": 352}},
+            {"name": "Platea Preferencial Izquierda", "capacity": 7300, "geometry": {"x": 28, "y": 352, "fill": "#356BCF", "type": "rect", "width": 89, "height": 352}},
+
+            {"name": "VIP Platino", "capacity": 8000, "geometry": {"d": "M592.105 594.691L591.925 642.691L857.423 643.692L856.995 757.191L537.497 755.987L537.686 705.987L463.186 705.707L462.998 755.706L142 754.496L142.43 640.497L409.428 641.503L408.607 594L592.105 594.691Z", "fill": "#AC8123", "type": "path"}}
+        ],
+        "layout_objects": [
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"d": "M501 836L279 836V776.5L472 776.5L472 710H527.5V776.5L720.5 776.5V836L501 836Z", "fill": "#222222", "type": "path", "text_x": 500.01, "text_y": 810.901, "font-size": 19}},
+            {"name": "Torre de Sonido", "type": "INFRA", "geometry": {"x": 472, "y": 526, "fill": "#787878", "type": "rect", "width": 54, "height": 54}}
+        ]
+    },
+    {
+        "name": "Teatro Gran Rex",
+        "capacity": 3600
+        "viewbox": "0 0 1000 1000",
+        "address": {"street": "Av. Corrientes 857", "city": "Cdad. Autónoma de Buenos Aires", "state": "Buenos Aires", "zip_code": "B7600"},
+        "sectors": [
+            {"name": "Platea Platino Centro", "capacity": 900, "geometry": {"type": "rect", "x": 398, "y": 771, "width": 177, "height": 105, "fill": "#F9BA72"}},
+            {"name": "Platea Platino Izquierda", "capacity": 8000, "geometry": {"type": "path", "d": "M362.856 769.5V876L342.5 884L330.5 872V777.5L362.856 769.5Z", "fill": "#F9BA72"}},
+            {"name": "Platea Platino Derecha", "capacity": 8000, "geometry": {"type": "path", "d": "M642.856 778.5V871L633 882L611 876.5V772L642.856 778.5Z", "fill": "#F9BA72"}},
+
+            {"name": "Platea Oro Centro", "capacity": 900, "geometry": {"type": "rect", "x": 398, "y": 706, "width": 177, "height": 60, "fill": "#FFF481"}},
+            {"name": "Platea Oro Izquierda", "capacity": 8000, "geometry": {"type": "path", "d": "M329.5 712.5L363.5 704V766L329.5 774.5V712.5Z", "fill": "#FFF481"}},
+            {"name": "Platea Oro Derecha", "capacity": 8000, "geometry": {"type": "path", "d": "M643 710V774L611 766.5V704.5L643 710Z", "fill": "#FFF481"}},
+
+            {"name": "Platea Plata Centro", "capacity": 900, "geometry": {"type": "rect", "x": 398, "y": 649, "width": 177, "height": 52, "fill": "#D3810E"}},
+            {"name": "Platea Plata Izquierda", "capacity": 8000, "geometry": {"type": "path", "d": "M363 648.5V700.5L327 708.5V840L311.5 844V819.5L294.5 825L294 801.5L276.5 806V783L258.5 787.5L258 765.5L240.5 768V673.5L363 648.5Z", "fill": "#D3810E"}},
+            {"name": "Platea Plata Derecha", "capacity": 8000, "geometry": {"type": "path", "d": "M610.5 649L770 680V776L743.5 770V783L733.5 777.5V790L716 786V809L698 805V827.5L680.5 825V846L647.5 839.5L646.5 707L611.5 700L610.5 649Z", "fill": "#D3810E"}},
+
+            {"name": "Platea Bronce Centro", "capacity": 8000, "geometry": {"type": "path", "d": "M363.5 604V645L204 676V647.5H211.5V634.5L363.5 604Z", "fill": "#F1D001"}},
+            {"name": "Platea Bronce Izquierda", "capacity": 8000, "geometry": {"type": "path", "d": "M431.5 584H574.5V645.5L399 645L398 573.5H431.5V584Z", "fill": "#F1D001"}},
+            {"name": "Platea Bronce Derecha", "capacity": 8000, "geometry": {"type": "path", "d": "M610.5 572L765 597V611.5H778.5V624H788V636H798.5L796.5 668H805.5V682.5L610.5 645V572Z", "fill": "#F1D001"}},
+
+            {"name": "Platea Bronce Lateral Izquierda", "capacity": 8000, "geometry": {"type": "path", "d": "M204.077 680.5L237 674V774L255.5 769V793.5L273 786.5V811L291 805L292 830.5L309.5 824.5L308 848.5L326.5 842.5V874H320L317 864.5L306 867L293.5 852V845L279.5 852L212.5 782V763L204.077 765.25V680.5Z", "fill": "#C32722"}},
+            {"name": "Platea Bronce Lateral Derecha", "capacity": 8000, "geometry": {"type": "path", "d": "M773 681L805.5 687.5V750L797 746.5V769L789 767.5V779L780 776.5V788.5L770.5 786.5L771.5 794.5L733 835.5L716 830.5V843.5L701.5 839.5L691.5 860.5L672 855V867.5L653.5 863.5L655 873L646.5 876.5L647 843.5L683.5 849.5V828.5L701.5 830.5L700 810.5L720.5 814L719 792L736.5 796.5V782.5L745.5 788.5V775L773 780.048V681Z", "fill": "#C32722"}},
+
+            {"name": "Super Poolman Bajo Izquierdo", "capacity": 8000, "geometry": {"type": "path", "d": "M175.5 504.5L341.5 469.5V521.5L157 559.5L155 528L175.5 504.5Z", "fill": "#E9CADE"}},
+            {"name": "Super Poolman Bajo Centro", "capacity": 8000, "geometry": {"type": "path", "d": "M375.5 473H599.5V491H593.5V523.5H382V492.5H375.5V473Z", "fill": "#E9CADE"}},
+            {"name": "Super Poolman Bajo Derecho", "capacity": 8000, "geometry": {"type": "path", "d": "M632 471.5L818.5 507V538.5L828.5 541L827.5 560.5L632 523.5V471.5Z", "fill": "#E9CADE"}},
+
+            {"name": "Super Poolman Alto Izquierdo", "capacity": 8000, "geometry": {"type": "path", "d": "M632 415.5L773 442.5V460L783 462.5V476.5L802 480V491L813 493.5V502.5L632 466.5V415.5Z", "fill": "#D07FAE"}},
+            {"name": "Super Poolman Alto Centro", "capacity": 8000, "geometry": {"type": "path", "d": "M484 439.5H501.5V428H544.5V439.5H573V428H598.5V468H375.5V439.5H401V450.5H420.5V439.5H473V450.5H484V439.5Z", "fill": "#D07FAE"}},
+            {"name": "Super Poolman Alto Derecho", "capacity": 8000, "geometry": {"type": "path", "d": "M199 475L306.5 454L306 463L340.5 455.5V466.5L179 499V488.5L199 485V475Z", "fill": "#D07FAE"}},
+
+            {"name": "Poolman Bajo Izquierdo", "capacity": 8000, "geometry": {"type": "path", "d": "M255.5 296.5V370L103.5 401V393.5L113 390V346.5L122 343.5V323.5L255.5 296.5Z", "fill": "#DCE49E"}},
+            {"name": "Poolman Bajo Derecho", "capacity": 8000, "geometry": {"type": "path", "d": "M717 297.5L868.5 327.5V336.5L885 340V383.5L895.5 386.5V397L885 395V404L717 370V297.5Z", "fill": "#DCE49E"}},
+            {"name": "Poolman Bajo Centro", "capacity": 8000, "geometry": {"type": "path", "d": "M570.5 297V314.5L565 323.5V368.5H425V323.5L420 314.5V297H570.5Z", "fill": "#DCE49E"}},
+            {"name": "Poolman Bajo Centro", "capacity": 900, "geometry": {"type": "rect", "x": 316, "y": 362, "width": 44, "height": 9, "fill": "#DCE49E"}},
+            {"name": "Poolman Bajo Centro", "capacity": 900, "geometry": {"type": "rect", "x": 630, "y": 362, "width": 44, "height": 9, "fill": "#DCE49E"}},
+            {"name": "Poolman Bajo Centro", "capacity": 900, "geometry": {"type": "rect", "x": 630, "y": 295, "width": 44, "height": 9, "fill": "#DCE49E"}},
+            {"name": "Poolman Bajo Centro", "capacity": 900, "geometry": {"type": "rect", "x": 316, "y": 295, "width": 44, "height": 9, "fill": "#DCE49E"}},
+
+            {"name": "Poolman Medio A Izquierdo", "capacity": 8000, "geometry": {"type": "path", "d": "M122 257.5L255 230V293.5L122 320.5V311.5L131 309V286.5L122 288V257.5Z", "fill": "#8DB235"}},
+            {"name": "Poolman Medio A Derecho", "capacity": 8000, "geometry": {"type": "path", "d": "M716.5 230.5L841 255V265.5L859 269V289L868.5 292V314.5L859 312V321.5L716.5 293.5V230.5Z", "fill": "#8DB235"}},
+            {"name": "Poolman Medio A Centro", "capacity": 8000, "geometry": {"type": "path", "d": "M585 229.5L577.022 293H415.468L404 229.5H585Z", "fill": "#8DB235"}},
+            {"name": "Poolman Medio A Centro", "capacity": 900, "geometry": {"type": "rect", "x": 316, "y": 274, "width": 44, "height": 19, "fill": "#8DB235"}},
+            {"name": "Poolman Medio A Centro", "capacity": 900, "geometry": {"type": "rect", "x": 630, "y": 274, "width": 44, "height": 19, "fill": "#8DB235"}},
+
+            {"name": "Poolman Medio B Izquierdo", "capacity": 8000, "geometry": {"type": "path", "d": "M130.5 189.5L254.5 164V226.5L122 253V244.5L137.5 240.5V220.5L130.5 222V189.5Z", "fill": "#CAE4F6"}},
+            {"name": "Poolman Medio B Derecho", "capacity": 8000, "geometry": {"type": "path", "d": "M716.5 163L833 187.5V197L841 199V251.5L716.5 227.25V163Z", "fill": "#CAE4F6"}},
+            {"name": "Poolman Medio B Centro", "capacity": 8000, "geometry": {"type": "path", "d": "M599.5 165L585.5 226H402L391 165H599.5", "fill": "#CAE4F6"}},
+            {"name": "Poolman Medio B Centro", "capacity": 900, "geometry": {"type": "rect", "x": 312, "y": 164, "width": 44, "height": 52, "fill": "#CAE4F6"}},
+            {"name": "Poolman Medio B Centro", "capacity": 900, "geometry": {"type": "rect", "x": 626, "y": 164, "width": 44, "height": 52, "fill": "#CAE4F6"}},
+
+            {"name": "Poolman Alto A Izquierdo", "capacity": 8000, "geometry": {"type": "path", "d": "M139.5 154V140.5L130 142.5V134L255 108.5V161L130 185.5V156.5L139.5 154Z", "fill": "#5D9CD3"}},
+            {"name": "Poolman Alto A Derecho", "capacity": 8000, "geometry": {"type": "path", "d": "M814.5 128V160.5L824 162.5V182L716 160.5V108.5L814.5 128Z", "fill": "#5D9CD3"}},
+            {"name": "Poolman Alto A Centro", "capacity": 8000, "geometry": {"type": "path", "d": "M571 109.5H607.5V138.5L601 142.5V161.5H389.5L388 142.5L383 138.5V109.5H411V131.5H571V109.5Z", "fill": "#5D9CD3"}},
+            {"name": "Poolman Alto A Centro", "capacity": 900, "geometry": {"type": "rect", "x": 312, "y": 109, "width": 44, "height": 52, "fill": "#5D9CD3"}},
+            {"name": "Poolman Alto A Centro", "capacity": 900, "geometry": {"type": "rect", "x": 626, "y": 109, "width": 44, "height": 52, "fill": "#5D9CD3"}},
+
+            {"name": "Poolman Alto B Izquierdo", "capacity": 8000, "geometry": {"type": "path", "d": "M130 122L255 97V106L130 131V122Z", "fill": "#265374"}},
+            {"name": "Poolman Alto B Centro", "capacity": 900, "geometry": {"type": "rect", "x": 285, "y": 98, "width": 125, "height": 9, "fill": "#265374"}},
+            {"name": "Poolman Alto B Centro", "capacity": 900, "geometry": {"type": "rect", "x": 572, "y": 98, "width": 117, "height": 9, "fill": "#265374"}},
+            {"name": "Poolman Alto B Derecho", "capacity": 8000, "geometry": {"type": "path", "d": "M716 97L814.5 116.5V125.5L716 105.5V97Z", "fill": "#265374"}},
+
+        ],
+        "layout_objects": [
+            {"name": "ESCENARIO", "type": "STAGE", "geometry": {"type": "rect", "x": 388, "y": 910, "width": 199, "height": 32, "fill": "#222222", "text_x": 487.009, "text_y": 934.186, "font-size": 12}}
+        ]
     }
 ]
 
@@ -96,6 +193,7 @@ CATEGORIAS_DATA = [
     {"name": "Trap & Hip-Hop", "icon": "bi-lightning-fill", "color": "#6f42c1"},
     {"name": "Heavy Metal", "icon": "bi-activity", "color": "#343a40"},
     {"name": "Electrónica", "icon": "bi-disc-fill", "color": "#007bff"},
+    {"name": "Teatro", "icon": "bi-ticket-perforated-fill", "color": "#b50404"},
 ]
 
 SHOWS_POOL = [
@@ -128,9 +226,10 @@ SHOWS_POOL = [
     {"title": "Depeche Mode - Memento Mori", "cat": "Electrónica", "desc": "Los pioneros del synth-rock regresan en una noche nostálgica y electrónica.", "dias": 145, "intl": True},
     {"title": "Pearl Jam - Dark Matter", "cat": "Rock", "desc": "Eddie Vedder y los suyos traen el espíritu intacto del grunge de Seattle.", "dias": 150, "intl": True},
     {"title": "Gorillaz - Cracker Island Live", "cat": "Pop", "desc": "Damon Albarn fusiona visuales animadas en pantallas con hip-hop y dub.", "dias": 155, "intl": True},
-    # Normalizamos estas últimas dos filas para evitar desajustes de llaves:
     {"title": "Eric Clapton", "cat": "Rock", "desc": "El espíritu intacto del rock del británico, en un show enérgico y cambiante.", "dias": 150, "intl": True},
     {"title": "Mark Knopfler", "cat": "Rock", "desc": "El regreso del escocés en una noche nostálgica y de alto impacto.", "dias": 145, "intl": True}
+    {"title": "OASIS", "cat": "Rock", "desc": "El regreso del fenómeno global del rock and roll. Durante su gira mundial, Argentina los recibe para dos noches a pura nostalgia y rock.", "dias": 90, "intl": True},
+    {"title": "INVASIONES I", "cat": "Teatro", "desc": "El espectáculo que cuenta con más de treinta artistas en escena propone una mirada contemporánea sobre un episodio fundacional de la historia argentina: las invasiones inglesas de 1806. A partir de una ambiciosa puesta en escena con gran despliegue, la obra busca reflejar los momentos de desconcierto y resistencia que precedieron a la defensa del Río de la Plata, acompañada por una banda sonora inspirada en el universo musical de Charly García.", "dias": 90, "intl": True}
 ]
 
 class Command(BaseCommand):

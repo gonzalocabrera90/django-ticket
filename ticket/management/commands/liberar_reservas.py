@@ -4,6 +4,9 @@ from django.db import transaction
 from datetime import timedelta
 from ticket.models import Order
 
+# Procedimiento para eliminar compras en estado pendiente y que
+# tienen un tiempo transcurrido mayor al permitido para una compra.
+
 class Command(BaseCommand):
     help = 'Libera los asientos de las órdenes pendientes que superaron los 10 minutos de gracia.'
 

@@ -1,0 +1,17 @@
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1000" height="1000" transform="matrix(-1 0 0 -1 1000 1000)" fill="white"/>
+<path d="M592.5 537L592.5 585L858 585L858 698.5L538.5 698.5L538.5 648.5L464 648.5L464 698.5L143 698.5L143 584.5L410 584.5L409 537L592.5 537Z" fill="#AC8123"/>
+<path d="M502 780H280V720.5H473V654H528.5V720.5H721.5V780H502Z" fill="black"/>
+<rect x="858" y="573" width="255" height="36" transform="rotate(-180 858 573)" fill="#D59F28"/>
+<rect x="400" y="573" width="256" height="36" transform="rotate(-180 400 573)" fill="#D59F28"/>
+<rect x="858" y="527" width="320" height="55" transform="rotate(-180 858 527)" fill="#FFD3A1"/>
+<rect x="528" y="527" width="54" height="55" transform="rotate(-180 528 527)" fill="#787878"/>
+<rect x="464" y="527" width="320" height="55" transform="rotate(-180 464 527)" fill="#FFD3A1"/>
+<rect x="858" y="463" width="714" height="165" transform="rotate(-180 858 463)" fill="#D3D3D3"/>
+<rect x="858" y="274" width="215" height="75" transform="rotate(-180 858 274)" fill="#76EAFF"/>
+<rect x="627" y="274" width="252" height="75" transform="rotate(-180 627 274)" fill="#76EAFF"/>
+<rect x="359" y="274" width="215" height="75" transform="rotate(-180 359 274)" fill="#76EAFF"/>
+<rect x="115" y="650" width="88" height="352" transform="rotate(-180 115 650)" fill="#356BCF"/>
+<rect x="976" y="650" width="89" height="352" transform="rotate(-180 976 650)" fill="#356BCF"/>
+<text fill="white" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="19" font-weight="bold" letter-spacing="0em"><tspan x="445.077" y="755.409">ESCENARIO</tspan></text>
+</svg>

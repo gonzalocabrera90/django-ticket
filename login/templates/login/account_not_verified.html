@@ -39,15 +39,6 @@ Cuenta no activada | EventLive
                 {% endfor %}
             {% endif %}
         </div>
-        <!-- <form
-            method="POST"
-            action="{% url 'resend-activation-email' %}"
-        >
-            {% csrf_token %}
-            <button type="submit">
-                Reenviar email
-            </button>
-        </form> -->
         <form id="resend-form" onsubmit="return false;">
             {% csrf_token %}
             <button type="submit" id="btn-reenviar">

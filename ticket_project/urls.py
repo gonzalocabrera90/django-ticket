@@ -7,7 +7,6 @@ from main.views import error_404_redirect_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
-    #path('', include('home.urls')),
     path('login/', include('login.urls')),
     path('register/', include('register.urls')),
     path('shows/', include('shows.urls')),

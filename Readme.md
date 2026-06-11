@@ -124,14 +124,19 @@ Este comando tardara un tiempo ya que dependiendo de los paises usados en CITIES
 
 ### 7. Cargar Datos de Prueba (Seeds / Fixtures)
 
-Para poblar la base de datos con lugares y sectores, shows musicales, teatros y categorías iniciales, corre el comando de carga de datos:
+Para usar la aplicacion y probar la UI con informacion de la base de datos necesitamos poblarla con lugares y sectores, shows musicales, teatros y categorías iniciales. Corre el comando de carga de datos:
 
 ```bash
 python manage.py shell < seed-completo.py
 
 ```
+La aplicacion Admin de Django tambien esta en funcionamiento para agregar informacion, en base a los modelos que usa la base de datos.
+Necesitamos crear un usuario con permisos para poder usarla. Debemos correr el siguiente comando y llenar los datos que te pide la consola:
 
+```bash
+python manage.py createsuperuser
 
+```
 
 
 ## 💻 Uso de la Aplicación

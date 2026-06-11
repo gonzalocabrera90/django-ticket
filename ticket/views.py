@@ -83,52 +83,6 @@ def iniciar_reserva(request):
             
     return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
 
-# @login_required
-# def iniciar_reserva(request):
-#     if request.method == "POST":
-#         # 1. Obtenemos los datos que envía el mapa interactivo
-#         sector_id = request.POST.get('show_sector_id')
-#         cantidad = int(request.POST.get('quantity', 1))
-        
-#         # 2. Abrimos un bloque atómico seguro para congelar la fila de la BD
-#         try:
-#             with transaction.atomic():
-#                 # select_for_update() bloquea este ShowSector específico en la BD 
-#                 # hasta que termine esta función. Nadie más puede leer/modificar sus asientos.
-#                 show_sector = ShowSector.objects.select_for_update().get(id=sector_id)
-                
-#                 # 3. Validamos stock disponible
-#                 if show_sector.available < cantidad:
-#                     return JsonResponse({'status': 'error', 'message': 'Ya no quedan asientos suficientes en este sector.'}, status=400)
-                
-#                 # 4. Restamos temporalmente el inventario
-#                 show_sector.available -= cantidad
-#                 show_sector.save()
-                
-#                 # 5. Calculamos el total monetario
-#                 total = show_sector.price * cantidad
-                
-#                 # 6. Creamos la orden en modo PENDING
-#                 nueva_orden = Order.objects.create(
-#                     user=request.user,
-#                     show=show_sector.show,
-#                     show_sector=show_sector,
-#                     quantity=cantidad,
-#                     total_price=total,
-#                     status='PENDING'
-#                 )
-                
-#             # Al salir del bloque transaction.atomic(), Django libera el bloqueo en la BD
-#             return JsonResponse({
-#                 'status': 'success',
-#                 'message': 'Reserva temporal exitosa. Tienes 10 minutos para pagar.',
-#                 'order_id': nueva_orden.id
-#             })
-            
-#         except ShowSector.DoesNotExist:
-#             return JsonResponse({'status': 'error', 'message': 'Sector no encontrado.'}, status=404)
-            
-#     return JsonResponse({'status': 'error', 'message': 'Método no permitido.'}, status=405)
 
 def mock_checkout_view(request, order_id):
     """Muestra la pantalla simulada de la pasarela de pagos"""
@@ -216,9 +170,6 @@ def payment_feedback_view(request):
         'clase_alerta': clase_alerta,
         'orden': orden
     })
-
-
-
 
 @login_required
 @require_POST

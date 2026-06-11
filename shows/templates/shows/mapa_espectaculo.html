@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Selección de Ubicación - {{ place.name }}</title>
@@ -9,10 +10,11 @@
             margin: 30px auto;
             padding: 20px;
             background: #ffffff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             font-family: 'Segoe UI', Arial, sans-serif;
         }
+
         .map-wrapper {
             width: 100%;
             background: #fdfdfd;
@@ -20,18 +22,21 @@
             border-radius: 4px;
             overflow: hidden;
         }
+
         /* Estilos vectoriales para los paths interactivos */
         .sector-cliqueable {
             cursor: pointer;
             transition: transform 0.2s ease, fill 0.2s ease, filter 0.2s ease;
             opacity: 0.8;
         }
+
         .sector-cliqueable:hover {
             opacity: 1;
-            filter: brightness(1.1) drop-shadow(0px 5px 5px rgba(0,0,0,0.3));
+            filter: brightness(1.1) drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.3));
             stroke: #333;
             stroke-width: 2px;
         }
+
         /* Alertas */
         .error-box {
             padding: 20px;
@@ -43,6 +48,7 @@
         }
     </style>
 </head>
+
 <body style="background-color: #f4f6f9;">
 
     <div class="teatro-container">
@@ -51,162 +57,78 @@
         <hr>
 
         {% if place.sectors.all %}
-            
-            <div class="map-wrapper">
-<!-- <svg viewBox="{{ place.viewbox }}" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
-    
-    <rect width="100%" height="100%" fill="#ffffff"/>
-    
-    {% for sector in place.sectors.all %}
-        <path 
-            id="{{ sector.slug }}"
-            d="{{ sector.polygon_geometry.d }}" 
-            fill="{{ sector.polygon_geometry.fill }}" 
-            class="sector-cliqueable"
-            data-name="{{ sector.name }}"
-            data-precio="{{ sector.price }}"
-        />
-    {% endfor %}
 
-    {% for obj in place.layout_objects.all %}
-        {% if obj.geometry.type == "rect" %}
-            <rect 
-                x="{{ obj.geometry.x }}" 
-                y="{{ obj.geometry.y }}" 
-                width="{{ obj.geometry.width }}" 
-                height="{{ obj.geometry.height }}" 
-                fill="{{ obj.geometry.fill }}"
-                stroke="#ffffff"
-                stroke-width="1"
-            />
-        {% elif obj.geometry.type == "path" %}
-            <path 
-                d="{{ obj.geometry.d }}" 
-                fill="{{ obj.geometry.fill }}"
-            />
-        {% endif %}
-    {% endfor %}
+        <div class="map-wrapper">
+            <svg viewBox="{{ place.viewbox }}" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
 
-    {% for obj in place.layout_objects.all %}
-        {% if obj.object_type == "STAGE" %}
-            <text 
-                x="{{ obj.geometry.text_x }}" 
-                y="{{ obj.geometry.text_y }}" 
-                fill="#ffffff" 
-                font-family="Arial, sans-serif"
-                font-size="12" 
-                font-weight="bold" 
-                text-anchor="middle"
-                style="pointer-events: none; letter-spacing: 1px;"
-            >
-                {{ obj.name }}
-            </text>
-        {% endif %}
-    {% endfor %}
+                <rect width="100%" height="100%" fill="#ffffff" />
 
-</svg> -->
-<svg viewBox="{{ place.viewbox }}" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
-    
-    <rect width="100%" height="100%" fill="#ffffff"/>
-    
-    {% for sector in place.sectors.all %}
-        <path 
-            id="{{ sector.slug }}"
-            d="{{ sector.polygon_geometry.d }}" 
-            fill="{{ sector.polygon_geometry.fill }}" 
-            class="sector-cliqueable"
-            data-name="{{ sector.name }}"
-            data-precio="{{ sector.price }}"
-        />
-    {% endfor %}
+                {% for sector in place.sectors.all %}
+                <path id="{{ sector.slug }}" d="{{ sector.polygon_geometry.d }}"
+                    fill="{{ sector.polygon_geometry.fill }}" class="sector-cliqueable" data-name="{{ sector.name }}"
+                    data-precio="{{ sector.price }}" />
+                {% endfor %}
 
-    {% for sector in place.sectors.all %}
-        
-        {% if sector.polygon_geometry.type == "path" %}
-            <path 
-                id="{{ sector.slug }}"
-                d="{{ sector.polygon_geometry.d }}" 
-                fill="{{ sector.polygon_geometry.fill }}" 
-                class="sector-cliqueable"
-                data-name="{{ sector.name }}"
-                data-precio="{{ sector.price }}"
-            />
-            
-        {% elif sector.polygon_geometry.type == "rect" %}
-            <rect 
-                id="{{ sector.slug }}"
-                x="{{ sector.polygon_geometry.x }}" 
-                y="{{ sector.polygon_geometry.y }}" 
-                width="{{ sector.polygon_geometry.width }}" 
-                height="{{ sector.polygon_geometry.height }}" 
-                fill="{{ sector.polygon_geometry.fill }}" 
-                class="sector-cliqueable"
-                data-name="{{ sector.name }}"
-                data-precio="{{ sector.price }}"
-            />
-        {% endif %}
+                {% for sector in place.sectors.all %}
 
-    {% endfor %}
+                {% if sector.polygon_geometry.type == "path" %}
+                <path id="{{ sector.slug }}" d="{{ sector.polygon_geometry.d }}"
+                    fill="{{ sector.polygon_geometry.fill }}" class="sector-cliqueable" data-name="{{ sector.name }}"
+                    data-precio="{{ sector.price }}" />
+
+                {% elif sector.polygon_geometry.type == "rect" %}
+                <rect id="{{ sector.slug }}" x="{{ sector.polygon_geometry.x }}" y="{{ sector.polygon_geometry.y }}"
+                    width="{{ sector.polygon_geometry.width }}" height="{{ sector.polygon_geometry.height }}"
+                    fill="{{ sector.polygon_geometry.fill }}" class="sector-cliqueable" data-name="{{ sector.name }}"
+                    data-precio="{{ sector.price }}" />
+                {% endif %}
+
+                {% endfor %}
 
 
-    {% for obj in place.layout_objects.all %}
-        {% if obj.geometry.type == "rect" %}
-            <rect 
-                x="{{ obj.geometry.x }}" 
-                y="{{ obj.geometry.y }}" 
-                width="{{ obj.geometry.width }}" 
-                height="{{ obj.geometry.height }}" 
-                fill="{{ obj.geometry.fill }}"
-                stroke="#ffffff"
-                stroke-width="1"
-            />
-        {% elif obj.geometry.type == "path" %}
-            <path 
-                d="{{ obj.geometry.d }}" 
-                fill="{{ obj.geometry.fill }}"
-            />
-        {% endif %}
-    {% endfor %}
+                {% for obj in place.layout_objects.all %}
+                {% if obj.geometry.type == "rect" %}
+                <rect x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" width="{{ obj.geometry.width }}"
+                    height="{{ obj.geometry.height }}" fill="{{ obj.geometry.fill }}" stroke="#ffffff"
+                    stroke-width="1" />
+                {% elif obj.geometry.type == "path" %}
+                <path d="{{ obj.geometry.d }}" fill="{{ obj.geometry.fill }}" />
+                {% endif %}
+                {% endfor %}
 
-    {% for obj in place.layout_objects.all %}
-        {% if obj.object_type == "STAGE" %}
-            <text 
-                x="{{ obj.geometry.text_x }}" 
-                y="{{ obj.geometry.text_y }}" 
-                fill="#ffffff" 
-                font-family="Arial, sans-serif"
-                font-size="12" 
-                font-weight="bold" 
-                text-anchor="middle"
-                style="pointer-events: none; letter-spacing: 1px;"
-            >
-                {{ obj.name }}
-            </text>
-        {% endif %}
-    {% endfor %}
+                {% for obj in place.layout_objects.all %}
+                {% if obj.object_type == "STAGE" %}
+                <text x="{{ obj.geometry.text_x }}" y="{{ obj.geometry.text_y }}" fill="#ffffff"
+                    font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle"
+                    style="pointer-events: none; letter-spacing: 1px;">
+                    {{ obj.name }}
+                </text>
+                {% endif %}
+                {% endfor %}
 
-</svg>
-            </div>
+            </svg>
+        </div>
 
-            <div id="info-panel" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; text-align: center;">
-                <p style="color: #666;">Haz clic en cualquier sector del mapa para ver la disponibilidad y precios.</p>
-            </div>
+        <div id="info-panel"
+            style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; text-align: center;">
+            <p style="color: #666;">Haz clic en cualquier sector del mapa para ver la disponibilidad y precios.</p>
+        </div>
 
         {% else %}
-            <div class="error-box">
-                <h3>El mapa de este establecimiento no se encuentra disponible actualmente.</h3>
-                <p>Por favor, intenta más tarde o ponte en contacto con soporte.</p>
-            </div>
+        <div class="error-box">
+            <h3>El mapa de este establecimiento no se encuentra disponible actualmente.</h3>
+            <p>Por favor, intenta más tarde o ponte en contacto con soporte.</p>
+        </div>
         {% endif %}
     </div>
 
     <script>
         document.querySelectorAll('.sector-cliqueable').forEach(sector => {
-            sector.addEventListener('click', function() {
+            sector.addEventListener('click', function () {
                 const name = this.getAttribute('data-name');
                 const disponibles = this.getAttribute('data-disponibles');
                 const precio = this.getAttribute('data-precio');
-                
+
                 const panel = document.getElementById('info-panel');
                 panel.innerHTML = `
                     <h3 style="margin: 0 0 10px 0; color: #333;">${name}</h3>
@@ -220,7 +142,7 @@
         });
 
         document.querySelectorAll('.sector-cliqueable').forEach(elemento => {
-            elemento.addEventListener('click', function() {
+            elemento.addEventListener('click', function () {
                 const name = this.getAttribute('data-name');
                 const precio = this.getAttribute('data-precio');
                 const disponibles = this.getAttribute('data-disponibles');
@@ -230,11 +152,12 @@
                 document.getElementById('info-nombre-sector').innerText = name;
                 document.getElementById('info-precio').innerText = precio;
                 document.getElementById('info-disponibles').innerText = disponibles;
-                
+
                 // Mostramos el panel informativo
                 document.getElementById('panel-info').style.display = 'block';
             });
         });
     </script>
 </body>
+
 </html>

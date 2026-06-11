@@ -15,7 +15,9 @@ class ShowPlace(models.Model):
         default="0 0 1000 1000", 
         help_text="Dimensiones originales del lienzo SVG para el escalado dinámico."
     )
-
+    class Meta:
+        verbose_name = "Estadio / Recinto"
+        verbose_name_plural = "🏢 Estadios y Recintos" # Le podés sumar un emoji para que resalte en el menú lateral
     def __str__(self):
         return self.name
 
@@ -135,18 +137,6 @@ class ShowSector(models.Model):
         # 2. Buscamos la capacidad en el modelo Sector vinculado
         # Cambiá 'capacity' por el nombre real que tenga en ese modelo
         return self.sector.capacity - asientos_reservados
-    # @property
-    # def available(self):
-    #     """Calcula las entradas disponibles en tiempo real sin guardarlas en la BD"""
-    #     return self.sector.capacity - (self.sold + self.reserved)
-
-    # def save(self, *args, **kwargs):
-    #     # La validación se sigue sirviendo del cálculo en tiempo real
-    #     if self.available < 0:
-    #         raise ValidationError(
-    #             f"La suma de ventas y reservas supera la capacidad física de {self.sector.name} ({self.sector.capacity})."
-    #         )
-    #     super().save(*args, **kwargs)
-        
+ 
     def __str__(self):
         return f"{self.show.event.title} ({self.show.date.strftime('%d/%m')}) - {self.sector.name} (${self.price})"

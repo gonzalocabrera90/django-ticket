@@ -209,50 +209,6 @@ def verify_login_code_view(request):
                 })
             return render(request, 'login/verify_login.html', {'error': 'Código inválido'})
     return render(request, 'login/verify_login.html')
-# def verify_login_code_view(request):
-#     user_id = request.session.get(
-#         'login_user_id'
-#     )
-
-#     if not user_id:
-#         return redirect('login')
-
-#     user = User.objects.get(
-#         id=user_id
-#     )
-
-#     if request.method == 'POST':
-#         code = request.POST.get(
-#             'code'
-#         )
-#         login_code = LoginCode.objects.filter(
-#             user=user,
-#             code=code
-#         ).first()
-
-#         if login_code:
-#             login_code.delete()
-#             request.session.pop(
-#                 'login_user_id',
-#                 None
-#             )
-#             login(request, user)
-#             return redirect('/')
-
-#         else:
-#             return render(
-#                 request,
-#                 'login/verify_login.html',
-#                 {
-#                     'error':
-#                     'Código inválido'
-#                 }
-#             )
-
-#     return render(
-#         request,
-#         'login/verify_login.html'
-#     )
 
 @require_POST
 def logout_view(request):
