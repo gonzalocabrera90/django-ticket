@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cities_light',
     'main',
-    #'home',
     'login',
     'register',
     'shows',

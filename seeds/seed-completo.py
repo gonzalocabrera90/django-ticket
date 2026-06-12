@@ -117,7 +117,7 @@ ESTADIOS_DATA = [
     },
     {
         "name": "Teatro Gran Rex",
-        "capacity": 3600
+        "capacity": 3600,
         "viewbox": "0 0 1000 1000",
         "address": {"street": "Av. Corrientes 857", "city": "Cdad. Autónoma de Buenos Aires", "state": "Buenos Aires", "zip_code": "B7600"},
         "sectors": [
@@ -227,7 +227,7 @@ SHOWS_POOL = [
     {"title": "Pearl Jam - Dark Matter", "cat": "Rock", "desc": "Eddie Vedder y los suyos traen el espíritu intacto del grunge de Seattle.", "dias": 150, "intl": True},
     {"title": "Gorillaz - Cracker Island Live", "cat": "Pop", "desc": "Damon Albarn fusiona visuales animadas en pantallas con hip-hop y dub.", "dias": 155, "intl": True},
     {"title": "Eric Clapton", "cat": "Rock", "desc": "El espíritu intacto del rock del británico, en un show enérgico y cambiante.", "dias": 150, "intl": True},
-    {"title": "Mark Knopfler", "cat": "Rock", "desc": "El regreso del escocés en una noche nostálgica y de alto impacto.", "dias": 145, "intl": True}
+    {"title": "Mark Knopfler", "cat": "Rock", "desc": "El regreso del escocés en una noche nostálgica y de alto impacto.", "dias": 145, "intl": True},
     {"title": "OASIS", "cat": "Rock", "desc": "El regreso del fenómeno global del rock and roll. Durante su gira mundial, Argentina los recibe para dos noches a pura nostalgia y rock.", "dias": 90, "intl": True},
     {"title": "INVASIONES I", "cat": "Teatro", "desc": "El espectáculo que cuenta con más de treinta artistas en escena propone una mirada contemporánea sobre un episodio fundacional de la historia argentina: las invasiones inglesas de 1806. A partir de una ambiciosa puesta en escena con gran despliegue, la obra busca reflejar los momentos de desconcierto y resistencia que precedieron a la defensa del Río de la Plata, acompañada por una banda sonora inspirada en el universo musical de Charly García.", "dias": 90, "intl": True}
 ]

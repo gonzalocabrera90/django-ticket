@@ -53,6 +53,55 @@ Eventos | Inicio
         DESTACADOS
     ========================== -->
 
+<!-- <section>
+
+    <h2 class="section-title">
+        Destacados
+    </h2>
+
+    <div class="cards-grid">
+
+        {% for evento in dashboard %}
+        {% if item.id %}
+        <a href="{% url 'shows' event_id=item.id %}" class="btn">Ver funciones</a>
+            <div class="card">
+                <img src="{{ evento.image_url }}" alt="{{ evento.title }}">
+
+                <div class="card-overlay"></div>
+
+                <div class="card-info">
+                    <h3>{{evento.title}}</h3>
+                    
+                </div>
+            </div>
+        </a>
+        {% else %}
+        <span class="text-muted">Próximamente</span>
+        {% endif %}
+        {% endfor %}
+
+    </div>
+
+</section> -->
+
+<!-- =========================
+        SHOWS
+    ========================== -->
+<!-- 
+<section>
+    <h2 class="section-title">Shows</h2>
+
+    <div id="contenedor-eventos" class="cards-grid">
+        {% include 'partials/events_grid_items.html' %}
+    </div>
+
+    <div class="center-button" style="text-align: center; margin-top: 30px; clear: both; width: 100%;">
+        <button id="btn-mostrar-mas" data-offset="8" class="btn btn-primary">
+            Mostrar más
+        </button>
+    </div>
+</section> -->
+
 <section>
 
     <h2 class="section-title">
@@ -62,35 +111,37 @@ Eventos | Inicio
     <div class="cards-grid">
 
         {% for evento in dashboard %}
-        <a  href="{% url 'shows' event_id=evento.id %}" >
-            <div class="card">
-                <img src="{{ evento.image_url }}" alt="{{ evento.title }}" >
+            <a href="{% url 'shows' event_id=evento.id %}" class="card-link">
+                <div class="card">
+                    <img src="{{ evento.image_url }}" alt="{{ evento.title }}">
 
-                <div class="card-overlay"></div>
+                    <div class="card-overlay"></div>
 
-                <div class="card-info">
-                    <h3>{{evento.title}}</h3>
-                    <!-- <p>{{evento.date}}</p> -->
+                    <div class="card-info">
+                        <h3>{{ evento.title }}</h3>
+                        <span class="btn">Ver funciones</span>
+                    </div>
                 </div>
+            </a>
+        {% empty %}
+            <div class="proximamente-box" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <p class="text-muted" style="font-size: 1.2rem; font-weight: bold;">
+                    ✨ Próximamente nuevos shows disponibles ✨
+                </p>
             </div>
-        </a>
         {% endfor %}
 
     </div>
 
 </section>
 
-<!-- =========================
-        SHOWS
-    ========================== -->
-
 <section>
     <h2 class="section-title">Shows</h2>
-    
+
     <div id="contenedor-eventos" class="cards-grid">
         {% include 'partials/events_grid_items.html' %}
     </div>
-    
+
     <div class="center-button" style="text-align: center; margin-top: 30px; clear: both; width: 100%;">
         <button id="btn-mostrar-mas" data-offset="8" class="btn btn-primary">
             Mostrar más
@@ -151,40 +202,40 @@ Eventos | Inicio
 {% endblock %}
 {% block javascript %}
 <script>
-document.getElementById('btn-mostrar-mas').addEventListener('click', function() {
-    const boton = this;
-    let offset = parseInt(boton.getAttribute('data-offset'));
-    const limiteBloque = 8; // La cantidad que traemos por vuelta
-    
-    fetch(`/api/cargar-mas-eventos/?offset=${offset}`)
-        .then(response => response.text())
-        .then(html => {
-            const contenedor = document.getElementById('contenedor-eventos');
-            
-            // Creamos un contenedor temporal en memoria para analizar las nuevas tarjetas
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            
-            // Contamos cuántas tarjetas de clase "card-grid" acaban de llegar del backend
-            const cantidadNuevasTarjetas = tempDiv.querySelectorAll('.card-grid').length;
-            
-            // SI LLEGARON TARJETAS: Las inyectamos en la pantalla
-            if (cantidadNuevasTarjetas > 0) {
-                contenedor.insertAdjacentHTML('beforeend', tempDiv.innerHTML);
-            }
-            
-            // REGLA DE OCULTACIÓN: Si llegaron menos tarjetas que el límite (o ninguna),
-            // significa que tocamos el fondo de la base de datos de PostgreSQL.
-            if (cantidadNuevasTarjetas < limiteBloque) {
-                boton.style.display = 'none'; // Chau botón
-            }
-            
-            // Incrementamos el offset para el próximo click potencial
-            offset += limiteBloque;
-            boton.setAttribute('data-offset', offset);
-        })
-        .catch(error => console.error('Error al cargar más eventos:', error));
-});
+    document.getElementById('btn-mostrar-mas').addEventListener('click', function () {
+        const boton = this;
+        let offset = parseInt(boton.getAttribute('data-offset'));
+        const limiteBloque = 8; // La cantidad que traemos por vuelta
+
+        fetch(`/api/cargar-mas-eventos/?offset=${offset}`)
+            .then(response => response.text())
+            .then(html => {
+                const contenedor = document.getElementById('contenedor-eventos');
+
+                // Creamos un contenedor temporal en memoria para analizar las nuevas tarjetas
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+
+                // Contamos cuántas tarjetas de clase "card-grid" acaban de llegar del backend
+                const cantidadNuevasTarjetas = tempDiv.querySelectorAll('.card-grid').length;
+
+                // SI LLEGARON TARJETAS: Las inyectamos en la pantalla
+                if (cantidadNuevasTarjetas > 0) {
+                    contenedor.insertAdjacentHTML('beforeend', tempDiv.innerHTML);
+                }
+
+                // REGLA DE OCULTACIÓN: Si llegaron menos tarjetas que el límite (o ninguna),
+                // significa que tocamos el fondo de la base de datos de PostgreSQL.
+                if (cantidadNuevasTarjetas < limiteBloque) {
+                    boton.style.display = 'none'; // Chau botón
+                }
+
+                // Incrementamos el offset para el próximo click potencial
+                offset += limiteBloque;
+                boton.setAttribute('data-offset', offset);
+            })
+            .catch(error => console.error('Error al cargar más eventos:', error));
+    });
 
 </script>
 {% endblock %}

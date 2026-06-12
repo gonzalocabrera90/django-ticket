@@ -7,20 +7,18 @@ from ticket.models import Ticket
 from django.contrib.auth.decorators import login_required
 
 def index_view(request):
+    # Traemos los eventos que sí tienen shows asociados
     dashboard = Event.objects.select_related('category').filter(
         shows__isnull=False
     ).distinct()[:4]
+    
     all_dashboard = Event.objects.select_related('category').filter(
         shows__isnull=False
     ).distinct()[:8]
-    categorias = Category.objects.all()
-    if not dashboard:
-        dashboard = MainDashboard(
-            title="DjangoTicket Portal",
-            welcome_message="Bienvenido al portal central de DjangoTicket. La plataforma está totalmente integrada y conectada a PostgreSQL local."
-        )
     
-    # Query database stats to show DB connectivity
+    categorias = Category.objects.all()
+    
+    # Mantenemos las estadísticas de conectividad
     stats = {
         'total_shows': Event.objects.count(),
         'total_users': User.objects.count(),
@@ -31,7 +29,7 @@ def index_view(request):
     db_user = connection.settings_dict.get('USER', 'N/A')
 
     context = {
-        'dashboard': dashboard,
+        'dashboard': dashboard,  # Enviamos el QuerySet limpio (puede ir vacío si no hay shows)
         'all_dashboard': all_dashboard,
         'categorias': categorias,
         'stats': stats,
@@ -41,6 +39,42 @@ def index_view(request):
         'db_user': db_user
     }
     return render(request, 'main/main.html', context)
+
+# def index_view(request):
+#     dashboard = Event.objects.select_related('category').filter(
+#         shows__isnull=False
+#     ).distinct()[:4]
+#     all_dashboard = Event.objects.select_related('category').filter(
+#         shows__isnull=False
+#     ).distinct()[:8]
+#     categorias = Category.objects.all()
+#     if not dashboard:
+#         dashboard = [MainDashboard(
+#             title="DjangoTicket Portal",
+#             welcome_message="Bienvenido al portal central de DjangoTicket. La plataforma está totalmente integrada y conectada a PostgreSQL local."
+#         )]
+    
+#     # Query database stats to show DB connectivity
+#     stats = {
+#         'total_shows': Event.objects.count(),
+#         'total_users': User.objects.count(),
+#         'total_tickets': Ticket.objects.count(),
+#     }
+    
+#     db_name = connection.settings_dict.get('NAME', 'N/A')
+#     db_user = connection.settings_dict.get('USER', 'N/A')
+
+#     context = {
+#         'dashboard': dashboard,
+#         'all_dashboard': all_dashboard,
+#         'categorias': categorias,
+#         'stats': stats,
+#         'url_name': 'Ruta Raíz (/)',
+#         'current_url': '/',
+#         'db_name': db_name,
+#         'db_user': db_user
+#     }
+#     return render(request, 'main/main.html', context)
 
 def cargar_mas_eventos_view(request):
     offset = int(request.GET.get('offset', 0))

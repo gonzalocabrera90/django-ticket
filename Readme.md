@@ -127,7 +127,7 @@ Este comando tardara un tiempo ya que dependiendo de los paises usados en CITIES
 Para usar la aplicacion y probar la UI con informacion de la base de datos necesitamos poblarla con lugares y sectores, shows musicales, teatros y categorías iniciales. Corre el comando de carga de datos:
 
 ```bash
-python manage.py shell < seed-completo.py
+python manage.py shell < seeds/seed-completo.py
 
 ```
 La aplicacion Admin de Django tambien esta en funcionamiento para agregar informacion, en base a los modelos que usa la base de datos.
@@ -159,7 +159,7 @@ Para comprobar el funcionamiento del flujo de compra se implemento un archivo pa
 Genera ordenes de compras vencidas. Se configura obteniendo informacion de la base de datos.
 
 ```bash
-python manage.py shell < seed-reserva.py
+python manage.py shell < seeds/seed-reserva.py
 
 ```
 
@@ -173,3 +173,76 @@ python manage.py liberar_reservas
 
 ```
 Limpia las compras fallidas verificando el tiempo transcurrido desde la reserva.
+
+### Iniciar la aplicacion en Docker
+
+# 🚀 Despliegue del Proyecto con Docker
+
+Este documento contiene las instrucciones necesarias para levantar el entorno de desarrollo local utilizando Docker y configurar la base de datos de Django.
+
+## 🛠️ Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado en tu sistema:
+* [Docker Desktop](https://docker.com)
+* Docker Compose (incluido en las versiones modernas de Docker)
+
+---
+
+## 📦 1. Iniciar la Aplicación
+
+Elige una de las siguientes opciones para levantar los contenedores según tus necesidades:
+
+### Opción A: Construir e iniciar en segundo plano (Recomendado)
+Usa este comando la primera vez o cuando realices cambios en el `Dockerfile` o en las dependencias:
+```bash
+docker compose up --build -d
+```
+
+### Opción B: Construir e iniciar viendo los logs en tiempo real
+```bash
+docker compose up --build
+```
+
+### Opción C: Iniciar contenedores ya construidos en segundo plano
+```bash
+docker compose up -d
+```
+
+---
+
+## ⚙️ 2. Configuración Inicial (Base de Datos y Datos)
+
+Una vez que los contenedores estén corriendo en segundo plano, ejecuta los siguientes comandos en tu terminal para preparar la aplicación:
+
+### Paso 1: Crear las tablas físicas en Postgres
+Ejecuta las migraciones de Django para crear la estructura de la base de datos:
+```bash
+docker compose exec web python manage.py migrate
+```
+
+### Paso 2: Cargar las ciudades
+Popula la base de datos con la información geográfica necesaria:
+```bash
+docker compose exec web python manage.py cities_light
+```
+
+### Paso 3: Crear tu usuario administrador local
+Crea una cuenta de superusuario para acceder al panel de administración de Django:
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+
+### Paso 4: Correr el seed completo de datos
+Llena la base de datos con información de prueba inicial ejecutando el script de preparación:
+```bash
+docker compose exec -T web python manage.py shell < seeds/seed-completo.py
+```
+
+---
+
+## 🛑 Detener la Aplicación
+
+Para apagar los contenedores y detener los servicios, ejecuta:
+```bash
+docker compose down
+```
