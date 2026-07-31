@@ -29,16 +29,16 @@ Es altamente recomendable aislar las dependencias del proyecto utilizando un ent
 
 * **En Linux/macOS:**
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 
 ```
 
 
 * **En Windows:**
 ```bash
-python -m venv venv
-.\\venv\\Scripts\\activate
+python -m venv .venv
+.venv\Scripts\activate
 
 ```
 
@@ -126,10 +126,18 @@ Este comando tardara un tiempo ya que dependiendo de los paises usados en CITIES
 
 Para usar la aplicacion y probar la UI con informacion de la base de datos necesitamos poblarla con lugares y sectores, shows musicales, teatros y categorías iniciales. Corre el comando de carga de datos:
 
+Comando para Linux
 ```bash
-python manage.py shell < seeds/seed-completo.py
+python manage.py shell < seeds/seed_completo.py
 
 ```
+
+Comando para Windows
+```bash
+python manage.py shell -c "import seeds.seed_completo"
+
+```
+
 La aplicacion Admin de Django tambien esta en funcionamiento para agregar informacion, en base a los modelos que usa la base de datos.
 Necesitamos crear un usuario con permisos para poder usarla. Debemos correr el siguiente comando y llenar los datos que te pide la consola:
 
@@ -159,7 +167,7 @@ Para comprobar el funcionamiento del flujo de compra se implemento un archivo pa
 Genera ordenes de compras vencidas. Se configura obteniendo informacion de la base de datos.
 
 ```bash
-python manage.py shell < seeds/seed-reserva.py
+python manage.py shell < seeds/seed_reserva.py
 
 ```
 
@@ -235,7 +243,7 @@ docker compose exec web python manage.py createsuperuser
 ### Paso 4: Correr el seed completo de datos
 Llena la base de datos con información de prueba inicial ejecutando el script de preparación:
 ```bash
-docker compose exec -T web python manage.py shell < seeds/seed-completo.py
+docker compose exec -T web python manage.py shell < seeds/seed_completo.py
 ```
 
 ---
