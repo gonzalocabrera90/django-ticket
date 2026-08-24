@@ -9,13 +9,12 @@ echo "=========================================="
 # 1. Esperar a que PostgreSQL este disponible
 # -------------------------------------------------------
 echo "[1] Esperando a que PostgreSQL este listo..."
-until python -c "import psycopg2; psycopg2.connect(host='$DB_HOST', port='$DB_PORT', user='$DB_USER', password='$DB_PASSWORD')" 2>/dev/null; do
+until python -c "import psycopg2; psycopg2.connect(dbname='$DB_NAME', host='$DB_HOST', port='$DB_PORT', user='$DB_USER', password='$DB_PASSWORD')" 2>/dev/null; do
     echo "  -> PostgreSQL no disponible, reintentando en 2 segundos..."
     sleep 2
 done
 echo "  -> PostgreSQL conectado"
 echo ""
-
 # -------------------------------------------------------
 # 2. Ejecutar migraciones
 # -------------------------------------------------------
@@ -48,7 +47,7 @@ echo ""
 
 # -------------------------------------------------------
 # 5. Ejecutar el comando original (CMD)
-# ------------------------------------------------=======
+# -------------------------------------------------------
 echo "=========================================="
 echo "  Iniciando servidor Django..."
 echo "=========================================="

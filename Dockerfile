@@ -9,7 +9,6 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Instala las dependencias del sistema necesarias para psycopg2 (PostgreSQL)
-# 🔴 ESTO ES CRUCIAL PARA POSTGRESQL:
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
@@ -23,11 +22,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el resto del codigo del proyecto
 COPY . /app/
 
-# Copia y da permisos al entrypoint
+# Da permisos de ejecucion al entrypoint (buena practica)
 RUN chmod +x /app/entrypoint.sh
 
 # Puerto de la aplicacion
 EXPOSE 8000
 
-ENTRYPOINT ["./entrypoint.sh"]
+# 🔴 CAMBIO CLAVE: Se invoca bash explicitamente para evitar "permission denied" en volúmenes montados
+ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
