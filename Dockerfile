@@ -20,5 +20,14 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia el resto del código del proyecto
+# Copia el resto del codigo del proyecto
 COPY . /app/
+
+# Copia y da permisos al entrypoint
+RUN chmod +x /app/entrypoint.sh
+
+# Puerto de la aplicacion
+EXPOSE 8000
+
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
