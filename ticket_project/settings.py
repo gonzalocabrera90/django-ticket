@@ -29,9 +29,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-sz#heoi=5s&d2^ye8!362
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -141,3 +138,38 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'notificaciones@ticketapp.com'
 # Procesador de pagos activo (Fácil de cambiar en el futuro)
 PAYMENT_PROCESSOR = 'ticket.payment_processors.MockPaymentProcessor'
+
+# ==============================================================================
+# CONFIGURACIÓN DE RED Y APIS (VÁLIDO PARA LOCAL Y CODESPACES)
+# ==============================================================================
+ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = True
+
+# ==============================================================================
+# ENTORNO DINÁMICO: ¿Estamos en GitHub Codespaces o en Local?
+# ==============================================================================
+if os.environ.get('CODESPACE_NAME'):
+    # ☁️ CONFIGURACIONES EXCLUSIVAS PARA LA NUBE (GITHUB)
+    codespace_name = os.environ.get('CODESPACE_NAME')
+    CSRF_TRUSTED_ORIGINS = [
+        f'https://{codespace_name}-8000.app.github.dev',
+        'https://*.github.dev',
+        'https://*.app.github.dev'
+    ]
+    
+    # Forzar seguridad HTTPS requerida por el proxy de GitHub
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'None'
+
+else:
+    # 🏠 CONFIGURACIONES EXCLUSIVAS PARA TU ENTORNO LOCAL (DEBIAN/WI-FI)
+    CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
+    # En tu casa dejamos que las cookies viajen por HTTP normal sin trabas:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SAMESITE = 'Lax'

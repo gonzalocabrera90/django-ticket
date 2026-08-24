@@ -6,29 +6,32 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      # Configuración interna del contenedor de Postgres
-      - POSTGRES_DB=django_ticket_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password_1234  # Pon la contraseña que quieras usar
+      - POSTGRES_DB=eventlive_db
+      - POSTGRES_USER=eventlive_user
+      - POSTGRES_PASSWORD=eventlive_password
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventlive_user -d eventlive_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     environment:
-      # Estas variables las leerá tu settings.py mediante os.environ.get
-      - DB_NAME=django_ticket_db
-      - DB_USER=postgres
-      - DB_PASSWORD=password_1234
-      - DB_HOST=db  # "db" coincide con el nombre del servicio de arriba
+      - DB_NAME=eventlive_db
+      - DB_USER=eventlive_user
+      - DB_PASSWORD=eventlive_password
+      - DB_HOST=db
       - DB_PORT=5432
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:

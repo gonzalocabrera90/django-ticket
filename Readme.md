@@ -1,4 +1,4 @@
-"""# 🎫 **EVENTLIVE** - Sistema de Venta de Entradas
+# 🎫 **EVENTLIVE** - Sistema de Venta de Entradas
 
 ¡Bienvenido a **EVENTLIVE**! Esta es una aplicación web desarrollada en **Django** y **PostgreSQL** diseñada para la gestión y venta de entradas (tickets) para diferentes shows musicales, conciertos y obras de teatro.
 
@@ -6,251 +6,178 @@
 
 ## 🚀 Requisitos Previos
 
-Antes de comenzar, asegúrate de tener instalado en tu sistema:
-- Python (versión 3.10 o superior)
-- PostgreSQL (versión 14 o superior)
-- Git
+Elegí cómo querés correr el proyecto:
+
+### Opción A: Correr con Docker (recomendado)
+
+Solo necesitás instalar:
+
+| Requisito | Para verificar |
+|---|---|
+| **Docker Desktop** | `docker --version` |
+| **Docker Compose** | `docker compose version` |
+
+> Docker se encarga de todo el resto: Python, PostgreSQL, dependencias y base de datos.
+
+### Opción B: Correr localmente (sin Docker)
+
+Necesitás instalar en tu computadora:
+
+| Requisito | Versión mínima | Para verificar |
+|---|---|---|
+| **Python** | 3.10+ | `python --version` |
+| **PostgreSQL** | 14+ | `psql --version` |
+| **Git** | cualquier versión | `git --version` |
 
 ---
 
-## 🛠️ Guía de Instalación y Configuración
+## 🐳 Opción A: Correr con Docker
 
-Sigue estos pasos detallados para configurar el entorno de desarrollo local.
+### 1. Clonar y levantar
 
-### 1. Clonar el Repositorio
-Primero, clona este proyecto en tu máquina local y accede al directorio:
 ```bash
 git clone https://github.com/gonzalocabrera90/django-ticket.git
 cd django-ticket
-
-### 2. Crear y Activar el Entorno Virtual
-
-Es altamente recomendable aislar las dependencias del proyecto utilizando un entorno virtual.
-
-* **En Linux/macOS:**
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-
-```
-
-
-* **En Windows:**
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-
-```
-
-
-
-### 3. Instalar Dependencias de Django y PostgreSQL
-
-Con el entorno virtual activo, instala Django junto con el adaptador para conectarse a PostgreSQL (`psycopg2` o `psycopg2-binary`) y demás librerías:
-
-```bash
-# Si el proyecto cuenta con un archivo requirements.txt, usa:
-# pip install -r requirements.txt
-# Sino....
-pip install --upgrade pip
-pip install django psycopg2-binary
-
-```
-
-### 4. Configurar la Base de Datos PostgreSQL
-
-Abre tu terminal de PostgreSQL (`psql`) o tu herramienta de administración gráfica (como pgAdmin) y ejecuta los siguientes comandos para crear la base de datos y el usuario:
-
-*(Nota: Asegura que estas corriendo en tu computadora el servicio de PostgreSQL para guardar y usar la informacion`)*
-
----
-
-```sql
-CREATE DATABASE eventlive_db;
-CREATE USER eventlive_user WITH PASSWORD 'tu_contraseña_segura';
-ALTER ROLE eventlive_user SET client_encoding TO 'utf8';
-ALTER ROLE eventlive_user SET default_transaction_isolation TO 'read committed';
-ALTER ROLE eventlive_user SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE eventlive_db TO eventlive_user;
-
-```
-
-### 5. Configurar el Archivo `settings.py` de Django
-
-Modifica el bloque `DATABASES` en el archivo `settings.py` de tu proyecto Django para conectarlo con la base de datos que acabas de crear:
-
-```python
-# django-ticket/settings.py
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'eventlive_db',
-        'USER': 'eventlive_user',
-        'PASSWORD': 'tu_contraseña_segura',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-
-```
-
-### 6. Ejecutar Migraciones de la Base de Datos
-
-Crea la estructura de tablas necesaria en PostgreSQL ejecutando las migraciones nativas de Django:
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-
-```
-El proyecto utiliza la libreria **django-cities-light** para cargar en la base de datos informacion util para elgir y guardar las direcciones de los usuarios.
-En settings.py, en la propiedad CITIES_LIGHT_INCLUDE_COUNTRIES, debemos fijar los paises que se van a usar en la aplicacion. Dependiendo de los elegidos en esta lista, son los que guardara en la base de datos.
-
-```python
-# django-ticket/settings.py
-
-CITIES_LIGHT_INCLUDE_COUNTRIES = ['AR']
-
-```
-
-Ya habiendo corrido python manage.py migrate ejecuta:
-
-```bash
-python manage.py cities_light
-
-```
-Este comando tardara un tiempo ya que dependiendo de los paises usados en CITIES_LIGHT_INCLUDE_COUNTRIES, guardara en la base de datos los paises, sus provincias/estados/regiones, y sus ciudades.
-
-### 7. Cargar Datos de Prueba (Seeds / Fixtures)
-
-Para usar la aplicacion y probar la UI con informacion de la base de datos necesitamos poblarla con lugares y sectores, shows musicales, teatros y categorías iniciales. Corre el comando de carga de datos:
-
-Comando para Linux
-```bash
-python manage.py shell < seeds/seed_completo.py
-
-```
-
-Comando para Windows
-```bash
-python manage.py shell -c "import seeds.seed_completo"
-
-```
-
-La aplicacion Admin de Django tambien esta en funcionamiento para agregar informacion, en base a los modelos que usa la base de datos.
-Necesitamos crear un usuario con permisos para poder usarla. Debemos correr el siguiente comando y llenar los datos que te pide la consola:
-
-```bash
-python manage.py createsuperuser
-
-```
-
-
-## 💻 Uso de la Aplicación
-
-### Iniciar el Servidor de Desarrollo
-
-Una vez completada la configuración, levanta el servidor local de Django:
-
-*(Nota: Asegura que estas corriendo en tu computadora el servicio de PostgreSQL para guardar y usar la informacion`)*
-
-```bash
-python manage.py runserver
-
-```
-
-Abre tu navegador web e ingresa a: `http://127.0.0.1:8000/`
-
-### Simulacion de reserva de entradas
-Para comprobar el funcionamiento del flujo de compra se implemento un archivo para simular reservas.
-Genera ordenes de compras vencidas. Se configura obteniendo informacion de la base de datos.
-
-```bash
-python manage.py shell < seeds/seed_reserva.py
-
-```
-
-Luego verificamos el conteo de entradas del sector para ver si disminuyo.
-Al iniciar un proceso de compra el sistema reserva entradas hasta concretarla.
-Si la compra falla necesitamos liberar esas entradas nuevamente para la venta.
-Para ello ejecutamos:
-
-```bash
-python manage.py liberar_reservas
-
-```
-Limpia las compras fallidas verificando el tiempo transcurrido desde la reserva.
-
-### Iniciar la aplicacion en Docker
-
-# 🚀 Despliegue del Proyecto con Docker
-
-Este documento contiene las instrucciones necesarias para levantar el entorno de desarrollo local utilizando Docker y configurar la base de datos de Django.
-
-## 🛠️ Requisitos Previos
-
-Antes de comenzar, asegúrate de tener instalado en tu sistema:
-* [Docker Desktop](https://docker.com)
-* Docker Compose (incluido en las versiones modernas de Docker)
-
----
-
-## 📦 1. Iniciar la Aplicación
-
-Elige una de las siguientes opciones para levantar los contenedores según tus necesidades:
-
-### Opción A: Construir e iniciar en segundo plano (Recomendado)
-Usa este comando la primera vez o cuando realices cambios en el `Dockerfile` o en las dependencias:
-```bash
-docker compose up --build -d
-```
-
-### Opción B: Construir e iniciar viendo los logs en tiempo real
-```bash
 docker compose up --build
 ```
 
-### Opción C: Iniciar contenedores ya construidos en segundo plano
-```bash
-docker compose up -d
-```
+El contenedor ejecutará automáticamente las migraciones, cargará las ciudades y los datos de prueba la primera vez.
 
----
+> Este setup automático lo hace `entrypoint.sh` que se ejecuta al iniciar el contenedor. No es necesario correr `setup.sh` ni `setup.ps1`, esos scripts son exclusivamente para setup local sin Docker.
 
-## ⚙️ 2. Configuración Inicial (Base de Datos y Datos)
+### 2. Crear superuser (opcional)
 
-Una vez que los contenedores estén corriendo en segundo plano, ejecuta los siguientes comandos en tu terminal para preparar la aplicación:
+En otra terminal, con los contenedores corriendo:
 
-### Paso 1: Crear las tablas físicas en Postgres
-Ejecuta las migraciones de Django para crear la estructura de la base de datos:
-```bash
-docker compose exec web python manage.py migrate
-```
-
-### Paso 2: Cargar las ciudades
-Popula la base de datos con la información geográfica necesaria:
-```bash
-docker compose exec web python manage.py cities_light
-```
-
-### Paso 3: Crear tu usuario administrador local
-Crea una cuenta de superusuario para acceder al panel de administración de Django:
 ```bash
 docker compose exec web python manage.py createsuperuser
 ```
 
-### Paso 4: Correr el seed completo de datos
-Llena la base de datos con información de prueba inicial ejecutando el script de preparación:
+### 3. Acceder
+
+Abrí `http://127.0.0.1:8000/` en tu navegador.
+
+### 4. Detener
+
 ```bash
-docker compose exec -T web python manage.py shell < seeds/seed_completo.py
+docker compose down
 ```
 
 ---
 
-## 🛑 Detener la Aplicación
+## 💻 Opción B: Setup Local con Scripts
 
-Para apagar los contenedores y detener los servicios, ejecuta:
-```bash
-docker compose down
+### 1. Crear la base de datos
+
+Corré estos comandos en PostgreSQL una sola vez (`psql` o pgAdmin):
+
+```sql
+CREATE DATABASE eventlive_db;
+CREATE USER eventlive_user WITH PASSWORD 'eventlive_password';
+ALTER ROLE eventlive_user SET client_encoding TO 'utf8';
+ALTER ROLE eventlive_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE eventlive_user SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE eventlive_db TO eventlive_user;
 ```
+
+### 2. Clonar y ejecutar el script
+
+El script hace todo automáticamente: crea el entorno virtual, instala dependencias, ejecuta migraciones, carga ciudades, seeds y opcionalmente crea el superuser.
+
+* **Linux/macOS:**
+```bash
+git clone https://github.com/gonzalocabrera90/django-ticket.git
+cd django-ticket
+chmod +x setup.sh
+./setup.sh
+```
+
+* **Windows (PowerShell):**
+```powershell
+git clone https://github.com/gonzalocabrera90/django-ticket.git
+cd django-ticket
+.\setup.ps1
+```
+
+> Si en Windows aparece un error de permisos, ejecutá primero:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+> ```
+
+### 3. Acceder
+
+```bash
+python manage.py runserver
+```
+
+Abrí `http://127.0.0.1:8000/` en tu navegador.
+
+---
+
+## 🔧 Configuración manual (referencia)
+
+Si necesás hacer los pasos a mano en lugar de usar los scripts:
+
+```bash
+# Crear entorno virtual
+python3 -m venv .venv          # Linux/macOS
+python -m venv .venv           # Windows
+
+# Activar entorno virtual
+source .venv/bin/activate      # Linux/macOS
+.venv\Scripts\activate         # Windows
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar migraciones
+python manage.py migrate
+
+# Cargar ciudades (puede tardar varios minutos)
+python manage.py cities_light
+
+# Cargar datos de prueba
+python manage.py shell < seeds/seed_completo.py              # Linux/macOS
+python manage.py shell -c "import seeds.seed_completo"       # Windows
+
+# Crear superuser
+python manage.py createsuperuser
+```
+
+El archivo `.env` se configura automáticamente con los scripts. Si hacés los pasos a mano, copiá `.env.example` a `.env` y editá los datos de conexión a PostgreSQL.
+
+---
+
+## 💻 Uso de la Aplicación
+
+### Admin de Django
+
+Creá un superuser (si no lo hiciste con el script) y accedé a `http://127.0.0.1:8000/admin/`.
+
+### Simulación de reserva de entradas
+
+Para probar el flujo de compra con reservas vencidas:
+
+```bash
+python manage.py shell < seeds/seed_reserva.py
+```
+
+Para liberar las reservas expiradas:
+
+```bash
+python manage.py liberar_reservas
+```
+
+---
+
+## 📋 Comandos útiles
+
+| Comando | Descripción |
+|---|---|
+| `docker compose up --build` | Levantar con Docker (rebuild) |
+| `docker compose down` | Detener Docker |
+| `docker compose logs -f web` | Ver logs del contenedor web |
+| `python manage.py runserver` | Iniciar servidor local |
+| `python manage.py createsuperuser` | Crear usuario admin |
+| `python manage.py liberar_reservas` | Liberar reservas vencidas |
+| `python manage.py cities_light` | Recargar datos geográficos |
