@@ -140,36 +140,34 @@ DEFAULT_FROM_EMAIL = 'notificaciones@ticketapp.com'
 PAYMENT_PROCESSOR = 'ticket.payment_processors.MockPaymentProcessor'
 
 # ==============================================================================
-# CONFIGURACIÓN DE RED Y APIS (VÁLIDO PARA LOCAL Y CODESPACES)
+# CONFIGURACIÓN DE RED Y APIS (LOCAL, DOCKER Y CODESPACES)
 # ==============================================================================
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
-# ==============================================================================
-# ENTORNO DINÁMICO: ¿Estamos en GitHub Codespaces o en Local?
-# ==============================================================================
-if os.environ.get('CODESPACE_NAME'):
-    # ☁️ CONFIGURACIONES EXCLUSIVAS PARA LA NUBE (GITHUB)
-    codespace_name = os.environ.get('CODESPACE_NAME')
-    CSRF_TRUSTED_ORIGINS = [
-        f'https://{codespace_name}-8000.app.github.dev',
-        'https://*.github.dev',
-        'https://*.app.github.dev'
-    ]
-    
-    # Forzar seguridad HTTPS requerida por el proxy de GitHub
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SAMESITE = 'None'
+# Leemos orígenes extra desde la variable de entorno por si quieres agregar dominios en producción
+env_csrf = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+extra_origins = [origin.strip() for origin in env_csrf.split(',') if origin.strip()]
 
-else:
-    # 🏠 CONFIGURACIONES EXCLUSIVAS PARA TU ENTORNO LOCAL (DEBIAN/WI-FI)
-    CSRF_TRUSTED_ORIGINS = [
-        'http://localhost:8000',
-        'http://127.0.0.1:8000',
-    ]
-    # En tu casa dejamos que las cookies viajen por HTTP normal sin trabas:
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
-    SESSION_COOKIE_SAMESITE = 'Lax'
+# Orígenes confiables unificados (Locales + GitHub Codespaces + Variables de entorno)
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://localhost:8000',
+    'https://*.github.dev',
+    'https://*.app.github.dev',
+] + extra_origins
+
+# Si Codespaces o un reverse proxy nos habla por HTTPS, informamos a Django
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Configuración de Cookies compatible con HTTP local y HTTPS de Codespaces
+# Detectamos si la petición viene sobre HTTPS para activar SameSite=None sólo cuando se requiere
+IS_CODESPACE = bool(os.environ.get('CODESPACE_NAME'))
+
+SESSION_COOKIE_SAMESITE = 'None' if IS_CODESPACE else 'Lax'
+CSRF_COOKIE_SAMESITE = 'None' if IS_CODESPACE else 'Lax'
+
+# Mantenemos las cookies no estrictas en desarrollo local para evitar bloqueos
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
