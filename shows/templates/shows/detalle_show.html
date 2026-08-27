@@ -23,46 +23,67 @@ Detalle Show | EventLive
             <p><strong>Dirección:</strong> {{ place.address.street }}, {{ place.address.city }}</p>
             <hr>
         </div>
+        <div style=" display: flex; align-items: center; justify-content: space-around;" >
+            <svg viewBox="{{ place.viewbox }}" width="60%" height="auto" xmlns="http://www.w3.org/2000/svg"
+                style="display: flex; align-items: center; justify-content: center; margin-top: 100px;">
+                <rect width="100%" height="100%" fill="#ffffff" />
 
-        <svg viewBox="{{ place.viewbox }}" width="60%" height="auto" xmlns="http://www.w3.org/2000/svg"
-            style="display: flex; align-items: center; justify-content: center; margin-top: 100px;">
-            <rect width="100%" height="100%" fill="#ffffff" />
+                {% for ss in show_sectors %}
+                {% if ss.sector.polygon_geometry.type == "path" %}
+                <path id="{{ ss.sector.slug }}" d="{{ ss.sector.polygon_geometry.d }}"
+                    fill="{{ ss.sector.polygon_geometry.fill }}" class="sector-cliqueable"
+                    data-name="{{ ss.sector.name }}" data-precio="{{ ss.price }}" data-disponibles="{{ ss.available }}"
+                    data-id-comercial="{{ ss.id }}" />
+                {% elif ss.sector.polygon_geometry.type == "rect" %}
+                <rect id="{{ ss.sector.slug }}" x="{{ ss.sector.polygon_geometry.x }}"
+                    y="{{ ss.sector.polygon_geometry.y }}" width="{{ ss.sector.polygon_geometry.width }}"
+                    height="{{ ss.sector.polygon_geometry.height }}" fill="{{ ss.sector.polygon_geometry.fill }}"
+                    class="sector-cliqueable" data-name="{{ ss.sector.name }}" data-precio="{{ ss.price }}"
+                    data-disponibles="{{ ss.available }}" data-id-comercial="{{ ss.id }}" />
+                {% endif %}
+                {% endfor %}
 
-            {% for ss in show_sectors %}
-            {% if ss.sector.polygon_geometry.type == "path" %}
-            <path id="{{ ss.sector.slug }}" d="{{ ss.sector.polygon_geometry.d }}"
-                fill="{{ ss.sector.polygon_geometry.fill }}" class="sector-cliqueable" data-name="{{ ss.sector.name }}"
-                data-precio="{{ ss.price }}" data-disponibles="{{ ss.available }}" data-id-comercial="{{ ss.id }}" />
-            {% elif ss.sector.polygon_geometry.type == "rect" %}
-            <rect id="{{ ss.sector.slug }}" x="{{ ss.sector.polygon_geometry.x }}"
-                y="{{ ss.sector.polygon_geometry.y }}" width="{{ ss.sector.polygon_geometry.width }}"
-                height="{{ ss.sector.polygon_geometry.height }}" fill="{{ ss.sector.polygon_geometry.fill }}"
-                class="sector-cliqueable" data-name="{{ ss.sector.name }}" data-precio="{{ ss.price }}"
-                data-disponibles="{{ ss.available }}" data-id-comercial="{{ ss.id }}" />
-            {% endif %}
-            {% endfor %}
-
-            {% for obj in layout_objects %}
-            {% if obj.geometry.type == "rect" %}
-            <rect x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" width="{{ obj.geometry.width }}"
-                height="{{ obj.geometry.height }}" fill="{{ obj.geometry.fill|default:'#333333' }}" />
-            <text fill="white" font-family="Arial, sans-serif" font-size="{{ obj.geometry.font_size }}"
-                text-anchor="middle" font-weight="bold" , letter-spacing="0em" ,>
-                <tspan x="{{ obj.geometry.text_x }}" y="{{ obj.geometry.text_y }}">
-                    {{ obj.name|upper }}
-                </tspan>
-
-                {% elif obj.geometry.type == "path" %}
-                <path d="{{ obj.geometry.d }}" fill="{{ obj.geometry.fill|default:'#333333' }}" />
+                {% for obj in layout_objects %}
+                {% if obj.geometry.type == "rect" %}
+                <rect x="{{ obj.geometry.x }}" y="{{ obj.geometry.y }}" width="{{ obj.geometry.width }}"
+                    height="{{ obj.geometry.height }}" fill="{{ obj.geometry.fill|default:'#333333' }}" />
                 <text fill="white" font-family="Arial, sans-serif" font-size="{{ obj.geometry.font_size }}"
                     text-anchor="middle" font-weight="bold" , letter-spacing="0em" ,>
                     <tspan x="{{ obj.geometry.text_x }}" y="{{ obj.geometry.text_y }}">
                         {{ obj.name|upper }}
                     </tspan>
-                </text>
-                {% endif %}
-                {% endfor %}
-        </svg>
+
+                    {% elif obj.geometry.type == "path" %}
+                    <path d="{{ obj.geometry.d }}" fill="{{ obj.geometry.fill|default:'#333333' }}" />
+                    <text fill="white" font-family="Arial, sans-serif" font-size="{{ obj.geometry.font_size }}"
+                        text-anchor="middle" font-weight="bold" , letter-spacing="0em" ,>
+                        <tspan x="{{ obj.geometry.text_x }}" y="{{ obj.geometry.text_y }}">
+                            {{ obj.name|upper }}
+                        </tspan>
+                    </text>
+                    {% endif %}
+                    {% endfor %}
+            </svg>
+            <div id="panel-info"
+                style="display: none; color: black; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; margin-top: 80px;">
+                <h3 id="info-nombre-sector" style="margin-top: 0;"></h3>
+                <p><strong>Precio:</strong> $<span id="info-precio"></span></p>
+                <p><strong>Disponibles:</strong> <span id="info-disponibles"></span> asientos</p>
+                <form action="{% url 'ticket:iniciar_pago' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="show_sector_id" id="btn-comprar">
+
+                    <div class="mb-3">
+                        <label>Cantidad de entradas:</label>
+                        <input type="number" name="quantity" value="1" min="1" max="6" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        🚀 Proceder al Pago
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -72,30 +93,10 @@ Detalle Show | EventLive
     <p>Por favor, intenta más tarde o ponte en contacto con soporte.</p>
 </div>
 {% endif %}
-<div id="info-panel"
-    style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; text-align: center;">
-    <p style="color: #666;">Haz clic en cualquier sector del mapa para ver la disponibilidad y precios.</p>
-</div>
-<div id="panel-info"
-    style="display: none; color: black; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; margin-top: 80px;">
-    <h3 id="info-nombre-sector" style="margin-top: 0;"></h3>
-    <p><strong>Precio:</strong> $<span id="info-precio"></span></p>
-    <p><strong>Disponibles:</strong> <span id="info-disponibles"></span> asientos</p>
-    <form action="{% url 'ticket:iniciar_pago' %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="show_sector_id" id="btn-comprar">
-        
-        <div class="mb-3">
-            <label>Cantidad de entradas:</label>
-            <input type="number" name="quantity" value="1" min="1" max="6" class="form-control">
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100" >
-            🚀 Proceder al Pago
-        </button>
-    </form>
-</div>
-
+            <div id="info-panel"
+                style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; text-align: center;">
+                <p style="color: #666;">Haz clic en cualquier sector del mapa para ver la disponibilidad y precios.</p>
+            </div>
 {% endblock %}
 
 {% block javascript %}

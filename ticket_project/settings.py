@@ -163,11 +163,19 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Configuración de Cookies compatible con HTTP local y HTTPS de Codespaces
 # Detectamos si la petición viene sobre HTTPS para activar SameSite=None sólo cuando se requiere
-IS_CODESPACE = bool(os.environ.get('CODESPACE_NAME'))
+# IS_CODESPACE = bool(os.environ.get('CODESPACE_NAME'))
 
-SESSION_COOKIE_SAMESITE = 'None' if IS_CODESPACE else 'Lax'
-CSRF_COOKIE_SAMESITE = 'None' if IS_CODESPACE else 'Lax'
+# ☁️ En Codespaces se requiere HTTPS + Secure=True + SameSite='None'
+# 🏠 En Local (HTTP) se requiere Secure=False + SameSite='Lax'
+# SESSION_COOKIE_SAMESITE = 'None' if IS_CODESPACE else 'Lax'
+# CSRF_COOKIE_SAMESITE = 'None' if IS_CODESPACE else 'Lax'
 
-# Mantenemos las cookies no estrictas en desarrollo local para evitar bloqueos
+# # Mantenemos las cookies no estrictas en desarrollo local para evitar bloqueos
+# SESSION_COOKIE_SECURE = True if IS_CODESPACE else False
+# CSRF_COOKIE_SECURE = True if IS_CODESPACE else False
+
+# Configuración universal para evitar rechazo de cookies
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False

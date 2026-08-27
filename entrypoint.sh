@@ -24,11 +24,18 @@ echo "  -> Migraciones completadas"
 echo ""
 
 # -------------------------------------------------------
-# 3. Cargar ciudades
+# 3. Cargar ciudades (solo si la tabla esta vacia)
 # -------------------------------------------------------
-echo "[3] Cargando datos geograficos..."
-python manage.py cities_light
-echo "  -> Datos geograficos cargados"
+echo "[3] Verificando datos geograficos..."
+CITIES_COUNT=$(python -c "import django, os; os.environ.setdefault('DJANGO_SETTINGS_MODULE','ticket_project.settings'); django.setup(); from cities_light.models import City; print(City.objects.count())" 2>/dev/null || echo "0")
+
+if [ "$CITIES_COUNT" = "0" ]; then
+    echo "  -> Cargando datos geograficos por primera vez (esto puede tardar unos minutos)..."
+    python manage.py cities_light
+    echo "  -> Datos geograficos cargados"
+else
+    echo "  -> Ya existen $CITIES_COUNT ciudades, omitiendo carga"
+fi
 echo ""
 
 # -------------------------------------------------------

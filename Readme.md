@@ -2,6 +2,9 @@
 
 ¡Bienvenido a **EVENTLIVE**! Esta es una aplicación web desarrollada en **Django** y **PostgreSQL** diseñada para la gestión y venta de entradas (tickets) para diferentes shows musicales, conciertos y obras de teatro.
 
+[![Ver video en YouTube](https://img.youtube.com/vi/AthFxeFIi50/hqdefault.jpg)](https://youtu.be/AthFxeFIi50)
+▶️ **[Haz clic para ver el video en YouTube](https://youtu.be/AthFxeFIi50)**
+
 ---
 
 ## 🚀 Requisitos Previos
@@ -96,7 +99,7 @@ chmod +x setup.sh
 ```powershell
 git clone https://github.com/gonzalocabrera90/django-ticket.git
 cd django-ticket
-.\setup.ps1
+powershell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
 > Si en Windows aparece un error de permisos, ejecutá primero:
@@ -107,6 +110,9 @@ cd django-ticket
 ### 3. Acceder
 
 ```bash
+
+.venv\Scripts\activate
+
 python manage.py runserver
 ```
 
